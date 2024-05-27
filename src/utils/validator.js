@@ -21,3 +21,15 @@ export const checkPassword = async (password, hash) => {
         return err
     }
 }
+
+//Update Services
+export const checkUpdateS = (data, servicesId)=>{
+    if(servicesId){
+        if(Object.entries(data).length === 0){
+            return false
+        }
+        return true
+    }else{
+        return false
+    }
+}
