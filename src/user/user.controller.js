@@ -1,9 +1,9 @@
 'use strict'
 
 import User from "./user.model.js"
-import jwt from 'jsonwebtoken'
 import {generateJwt} from '../utils/jwt.js'
-import {encrypt,checkPassword} from '../utils/validator.js'
+import {  encrypt,checkPassword } from '../utils/validator.js'
+import jwt from 'jsonwebtoken'
 
 
 export const testU = (req, res) => {
@@ -148,4 +148,36 @@ export const login = async (req, res) => {
         })
     }
 
+}
+
+//Update
+
+
+//Delete
+export const deleteU = async (req, res) => {
+    try {
+        let secretKey = process.env.SECRET_KEY
+        let { authorization } = req.headers
+        let { uid } = jwt.verify(authorization, secretKey)// extrae del token el uid para no ponerlo en la url
+        let { confirmation } = req.body // Agrega un campo de confirmación 
+
+        // verifica si el campo confirmation es no que de el siguiente mensaje y que no ejecute nada
+        if (confirmation === 'no') {
+            return res.status(200).send({ message: 'Deletion cancelled by user' })
+        }
+        // verifica si el campo confirmation es si que continue con el proceso de eliminacion al igual que si se pone otra palabra que no sea
+        // si o no que tire el mensaje que solo se puede poner si o no
+        if (confirmation !== 'yes') {
+            return res.status(400).send({ message: 'Please confirm the deletion by providing confirmation: "yes or no"' })
+        }
+
+        let deletedUser = await User.findOneAndDelete({ _id: uid })
+
+        if (!deletedUser) return res.status(404).send({ message: 'Account not found and not deleted' })
+
+        return res.send({ message: `Account with username ${deletedUser.username} deleted successfully` })
+    } catch (err) {
+        console.error(err)
+        return res.status(500).send({ message: 'Error deleting account' })
+    }
 }

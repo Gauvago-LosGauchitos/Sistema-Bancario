@@ -33,3 +33,23 @@ export const checkUpdateS = (data, servicesId)=>{
         return false
     }
 }
+
+export const checkOldPassword = async (oldPassword, hash) => {
+    try {
+        return await compare(oldPassword, hash);
+    } catch (err) {
+        console.error(err);
+        throw new Error('Error comparing passwords');
+    }
+};
+
+export const hashPassword = async (password) => {
+    try {
+        const hashedPassword = await hash(password, 10); 
+        return hashedPassword;
+    } catch (err) {
+        console.error(err);
+        throw new Error('Error hashing password');
+    }
+};
+
