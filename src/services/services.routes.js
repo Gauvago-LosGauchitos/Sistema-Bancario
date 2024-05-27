@@ -1,10 +1,11 @@
 import express from 'express'
 
+import {  register, test } from './services.controller.js';
+
 const api = express.Router();
 
-import {  test } from './services.controller.js';
-
 api.get('/test', test)
+api.post('/register', register)
 
 
 export default api
