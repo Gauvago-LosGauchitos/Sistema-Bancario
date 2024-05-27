@@ -7,6 +7,39 @@ export const test = (req, res)=>{
     return res.send({message: 'Test is running'})
 }
 
+export const defaultServices = async (req, res) => {
+    try {
+        const defaultServicesExist = await Services.findOne({ name: 'default' });
+
+        if (defaultServicesExist) {
+        } else {
+            const defaultData = {
+                name: 'default',
+                description: 'default',
+                price: 500
+            };
+            const defaultServices = new Services(defaultData);
+            await defaultServices.save();
+        }
+
+        const servicesDefault = [
+            'Depositos',
+            'Transferencia',
+            'Préstamos'
+        ];
+
+        const existingServices = await Services.find({ name: { $in: servicesDefault } });
+        const existingServiceNames = new Set(existingServices.map(cat => cat.name));
+        const newServices = servicesDefault.filter(name => !existingServiceNames.has(name));
+        const newServicesPromises = newServices.map(name => Services.create({ name: name, description: 'en linea', price: 500 }));
+        await Promise.all(newServicesPromises);
+
+        console.log('Services categories created');
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 //Register
 export const register = async(req, res)=>{
     try {
