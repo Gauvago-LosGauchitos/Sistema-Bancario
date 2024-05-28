@@ -225,9 +225,7 @@ export const updateUserSelf = async (req, res) => {
 //Delete
 export const deleteU = async (req, res) => {
     try {
-        let secretKey = process.env.SECRET_KEY
-        let { authorization } = req.headers
-        let { uid } = jwt.verify(authorization, secretKey)// extrae del token el uid para no ponerlo en la url
+        let { uid } = req.params.id
         let { confirmation } = req.body // Agrega un campo de confirmación 
 
         // verifica si el campo confirmation es no que de el siguiente mensaje y que no ejecute nada
