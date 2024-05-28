@@ -1,8 +1,8 @@
 'use strict'
 
 import User from "./user.model.js"
-import {generateJwt} from '../utils/jwt.js'
-import {  encrypt,checkPassword } from '../utils/validator.js'
+import { generateJwt } from '../utils/jwt.js'
+import { encrypt, checkPassword, checkUpdateUser, checkUpdateUserSelf } from '../utils/validator.js'
 import jwt from 'jsonwebtoken'
 
 
@@ -49,11 +49,11 @@ export const registerAd = async (req, res) => {
         let data = req.body
         let exists = await User.findOne({
             $or: [{
-                    user: data.username
-                },
-                {
-                    email: data.email
-                }
+                user: data.username
+            },
+            {
+                email: data.email
+            }
             ]
         })
         if (exists) {
@@ -116,11 +116,11 @@ export const login = async (req, res) => {
         } = req.body
         let user = await User.findOne({
             $or: [{
-                    username
-                },
-                {
-                    email
-                }
+                username
+            },
+            {
+                email
+            }
             ]
         })
         if (user && await checkPassword(password, user.password)) {
@@ -150,7 +150,76 @@ export const login = async (req, res) => {
 
 }
 
-//Update
+//Update de parte de un admin
+export const updateUserAd = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const userData = req.body;
+
+        if (!checkUpdateUser(userData, userId)) {
+            return res.status(400).json({ message: 'No se han proporcionado datos para actualizar' });
+        }
+
+        // Verificar si el usuario es administrador
+        const user = await User.findById(userId);
+        if (user.role === 'ADMIN') {
+            return res.status(403).json({ message: 'No se puede modificar un administrador' });
+        }
+
+        // Actualizar campos permitidos
+        const updatedUser = {
+            name: userData.name,
+            username: userData.username,
+            address: userData.address,
+            phone: userData.phone,
+            email: userData.email,
+            nameOfWork: userData.jobTitle,
+            monthlyIncome: userData.monthlyIncome,
+        };
+
+        // Verificar ingresos mensuales
+        if (updatedUser.monthlyIncome < 100) {
+            return res.status(400).json({ message: 'Ingresos mensuales deben ser mayores o iguales a Q100' });
+        }
+
+        // Actualizar usuario
+        await User.findByIdAndUpdate(userId, updatedUser, { new: true });
+
+        res.json({ message: 'Usuario actualizado correctamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al actualizar usuario' });
+    }
+};
+
+//update del mismo usuario a si mismo
+export const updateUserSelf = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const userId = decoded.id;
+    const userData = req.body;
+
+    if (!checkUpdateUserSelf(userData)) {
+      return res.status(400).json({ message: 'No se pueden actualizar los siguientes campos: nombre, DPI, número de cuenta, dirección, nombre de trabajo, ingresos mensuales' });
+    }
+
+    // Actualizar campos permitidos
+    const updatedUser = {
+      nickname: userData.nickname,
+      phone: userData.phone,
+      email: userData.email,
+    };
+
+    // Actualizar usuario
+    await User.findByIdAndUpdate(userId, updatedUser, { new: true });
+
+    res.json({ message: 'Usuario actualizado correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error al actualizar usuario' });
+  }
+};
 
 
 //Delete

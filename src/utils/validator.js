@@ -53,3 +53,34 @@ export const hashPassword = async (password) => {
     }
 };
 
+
+
+//Update User
+export const checkUpdateUser = (data, userId) => {
+    if (userId) {
+      if (Object.entries(data).length === 0) {
+        return false;
+      }
+  
+      // Verificar si se esta actualizando la contraseña y/o el DPI
+      if (data.password || data.dpi) {
+        return false;
+      }
+  
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  export const checkUpdateUserSelf = (data) => {
+    if (Object.entries(data).length === 0) {
+      return false;
+    }
+    // Verificar si password, DPI, name, accountNumber, address, nameOfWork, o monthlyIncome se esta actualizando
+    if (data.password || data.dpi || data.name || data.accountNumber || data.address || data.jobTitle || data.monthlyIncome) {
+      return false;
+    }
+  
+    return true;
+  };
