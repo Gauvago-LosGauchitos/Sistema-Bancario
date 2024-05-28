@@ -195,7 +195,7 @@ export const updateUserAd = async (req, res) => {
 //update del mismo usuario a si mismo
 export const updateUserSelf = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(' ')[1];
+    const token = req.headers.authorization
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     const userId = decoded.id;
     const userData = req.body;

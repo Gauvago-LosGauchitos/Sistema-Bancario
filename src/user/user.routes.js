@@ -8,8 +8,8 @@ const api = express.Router();
 api.get('/testU', testU)
 api.post('/login', login)
 api.post('/registerAd',[validateJwt, isAdmin], registerAd)
-api.post('/registerC',registerC)
-api.put('/updateUAd/:id', [isAdmin], updateUserAd)
+api.post('/registerC',[validateJwt, isAdmin],registerC)
+api.put('/updateUAd/:id', [validateJwt,isAdmin], updateUserAd)
 api.put('/updateU', [validateJwt], updateUserSelf)
 api.delete('/deleteU/:id', [validateJwt],deleteU)
 

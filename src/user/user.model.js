@@ -18,6 +18,7 @@ const userSchema = mongoose.Schema({
     },
     DPI: {
         type : Number,
+        unique: true,
         minLength: 13,
         maxLength: 13,
         required: true
