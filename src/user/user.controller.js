@@ -166,6 +166,20 @@ export const updateUserAd = async (req, res) => {
             return res.status(403).json({ message: 'No se puede modificar un administrador' });
         }
 
+        // no deja actulizar si se inteta actulizar algunos de estos campos osea Dpi o la contrase;a
+        let restrictedFields = [];
+        if ('DPI' in userData) {
+            restrictedFields.push('DPI');
+            delete userData.DPI;
+        }
+        if ('password' in userData) {
+            restrictedFields.push('password');
+            delete userData.password;
+        }
+
+        if (restrictedFields.length > 0) {
+            return res.status(400).json({ message: `No se puede actualizar los campos: ${restrictedFields.join(', ')}` });
+        }
         // Actualizar campos permitidos
         const updatedUser = {
             name: userData.name,
@@ -199,6 +213,7 @@ export const updateUserSelf = async (req, res) => {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     const userId = decoded.id;
     const userData = req.body;
+    
 
     if (!checkUpdateUserSelf(userData)) {
       return res.status(400).json({ message: 'No se pueden actualizar los siguientes campos: nombre, DPI, número de cuenta, dirección, nombre de trabajo, ingresos mensuales' });
