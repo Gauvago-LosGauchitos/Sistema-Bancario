@@ -2,9 +2,10 @@ import express from 'express'
 
 const api = express.Router();
 
-import {  test } from './accounts.controller.js';
+import {  register, test } from './accounts.controller.js';
 
 api.get('/test', test)
+api.post('/register', register)
 
 
 export default api
