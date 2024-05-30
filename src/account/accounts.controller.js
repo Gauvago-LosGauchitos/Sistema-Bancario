@@ -7,7 +7,7 @@ export const test = (req, res)=>{
     return res.send({message: 'Test is running'})
 }
 
-//Gracias a los chinos y sus videos
+//Register de accounts
 export const register = async (req, res) => {
     try {
         const { availableBalance, creationDate, user, favorite } = req.body
@@ -48,4 +48,16 @@ export const register = async (req, res) => {
         console.error(err)
         return res.status(500).send({ message: 'Error registrando la cuenta', error: err })
     }
-};
+}
+
+//Listar accounts
+
+export const obtener = async (req, res) => {
+    try {
+        let data = await Accounts.find()
+        return res.send({ data })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ message: 'the information cannot be brought' })
+    }
+}
