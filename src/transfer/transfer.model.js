@@ -18,6 +18,16 @@ const transferSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'accounts',
         required: true
+    },
+    motion:{
+        type: String,
+        enum:['TRANSFER', 'BUYED'],
+        required: true
+    },
+    services:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'services',
+        required: true
     }
 })
 
