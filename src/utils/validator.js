@@ -83,4 +83,21 @@ export const checkUpdateUser = (data, userId) => {
     }
   
     return true;
-  };
+  }
+
+  //Update favorite
+  export const checkUpdateF = (data, favoriteId) => {
+    if (favoriteId) {
+        if (Object.keys(data).length === 0) {
+            return false;
+        }
+        for (const key in data) {
+            if (data[key] === '') {
+                return false;
+            }
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
