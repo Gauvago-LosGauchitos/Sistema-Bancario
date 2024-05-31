@@ -10,7 +10,6 @@ import userRoutes from '../src/user/user.routes.js'
 import servicesRoutes from '../src/services/services.routes.js'
 import accountsRoutes from '../src/account/accounts.routes.js'
 import transferRoutes from '../src/transfer/transfer.routes.js'
-import motionRoutes from '../src/motion/motion.routes.js'
 import historyRoutes from '../src/history/history.routes.js'
 import favoriteRoutes from '../src/favorites/favorite.routes.js'
 
@@ -31,7 +30,6 @@ const app = express()
     app.use('/services', servicesRoutes)
     app.use('/accounts', accountsRoutes)
     app.use('/transfer', transferRoutes)
-    app.use('/motion', motionRoutes)
     app.use('/history', historyRoutes)
     app.use('/favorite', favoriteRoutes)
 

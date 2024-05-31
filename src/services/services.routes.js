@@ -1,7 +1,7 @@
 import express from 'express'
 
 import {  register, test, listarServices, deleteS, updateS, search } from './services.controller.js';
-import {validateJwt, isAdmin} from '../../middlewares/validate-jwt.js'
+import {validateJwt, isAdmin} from '../middlewares/validate-jwt.js'
 
 const api = express.Router();
 

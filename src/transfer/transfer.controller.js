@@ -1,4 +1,5 @@
 import Transfer from "./transfer.model.js"
+import Services from '../services/services.model.js'
 
 
 export const test = (req, res)=>{
@@ -8,7 +9,22 @@ export const test = (req, res)=>{
 
 export const transfer = async (req, res) => {
     try {
+        let uid = req.user._id
+        let data = req.body 
         
+        
+    } catch (error) {
+        
+    }
+}
+
+export const buyed = async (req, res) => {
+    try {
+        let uid = req.user._id
+        let data = req.body 
+        
+
+
     } catch (error) {
         
     }
