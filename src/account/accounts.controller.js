@@ -50,14 +50,77 @@ export const register = async (req, res) => {
     }
 }
 
-//Listar accounts
 
-export const obtener = async (req, res) => {
+//Delete 
+
+export const eliminarA = async (req, res) => {
     try {
-        let data = await Accounts.find()
+        const { id } = req.params
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).send({ message: 'El ID de la cuenta no es válido.' })
+        }
+
+        const account = await Accounts.findById(id)
+
+        if (!account) {
+            return res.status(404).send({ message: 'Cuenta no encontrada.' })
+        }
+        if (account.availableBalance !== 0) {
+            return res.status(400).send({ message: 'No se puede eliminar la cuenta. El balance disponible debe ser cero.' })
+        }
+
+        await Accounts.findByIdAndDelete(id)
+        return res.send({ message: 'Cuenta eliminada con éxito.' })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ message: 'Error eliminando la cuenta', error })
+    }
+}
+
+// Obtener una cuenta específica
+export const getAccount = async (req, res) => {
+    try {
+        const { id } = req.params
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).send({ message: 'El ID de la cuenta no es válido.' })
+        }
+
+        const account = await Accounts.findById(id)
+        if (!account) {
+            return res.status(404).send({ message: 'Cuenta no encontrada.' })
+        }
+
+        return res.send({ data: account })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ message: 'Error obteniendo la cuenta', error })
+    }
+}
+
+
+// Filtrar cuentas
+export const filterAccounts = async (req, res) => {
+    try {
+        const { user, creationDate } = req.query
+        const query = {}
+
+        if (user && mongoose.Types.ObjectId.isValid(user)) {
+            query.user = user
+        }
+
+        if (creationDate) {
+            const parsedDate = new Date(creationDate)
+            if (!isNaN(parsedDate.getTime())) {
+                query.creationDate = parsedDate
+            } else {
+                return res.status(400).send({ message: 'Fecha de creación no válida.' })
+            }
+        }
+
+        let data = await Accounts.find(query)
         return res.send({ data })
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ message: 'the information cannot be brought' })
+        return res.status(500).send({ message: 'Error filtrando las cuentas', error })
     }
 }

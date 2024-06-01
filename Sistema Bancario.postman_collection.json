@@ -3,7 +3,8 @@
 		"_postman_id": "a0f6b198-844d-4935-b491-a5eb16b33fa4",
 		"name": "Sistema Bancario",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "35281543"
+		"_exporter_id": "35281543",
+		"_collection_link": "https://gold-escape-415444.postman.co/workspace/My-Workspace~fb53fd72-a75d-45a2-8cf7-1bd6425837a6/collection/35281543-a0f6b198-844d-4935-b491-a5eb16b33fa4?action=share&source=collection_link&creator=35281543"
 	},
 	"item": [
 		{
@@ -18,68 +19,12 @@
 						"method": "POST",
 						"header": [
 							{
-								"key": "Cache-Control",
-								"value": "no-cache",
-								"name": "cache-control",
-								"type": "text"
-							},
-							{
-								"key": "Postman-Token",
-								"value": "<calculated when request is sent>",
-								"name": "postman-token",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"name": "content-type",
-								"type": "text"
-							},
-							{
-								"key": "Content-Length",
-								"value": "<calculated when request is sent>",
-								"name": "content-length",
-								"type": "text"
-							},
-							{
-								"key": "Host",
-								"value": "<calculated when request is sent>",
-								"name": "host",
-								"type": "text"
-							},
-							{
-								"key": "User-Agent",
-								"value": "PostmanRuntime/7.32.1",
-								"name": "user-agent",
-								"type": "text"
-							},
-							{
 								"key": "Accept",
-								"value": "*/*",
-								"name": "accept",
-								"type": "text"
-							},
-							{
-								"key": "Accept-Encoding",
-								"value": "gzip, deflate, br",
-								"name": "accept-encoding",
-								"type": "text"
-							},
-							{
-								"key": "Connection",
-								"value": "keep-alive",
-								"name": "connection",
-								"type": "text"
-							},
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
+								"value": "application/json"
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NjU0YjEyMTA4ZDJhYmNiOTZmYTYyNTYiLCJ1c2VybmFtZSI6ImFkbWluYiIsIm5hbWUiOiJBRE1JTkIiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3MTY4NDI2NDUsImV4cCI6MTcxNjg1MzQ0NX0.tKJRI53BVqqYDnHH3NPeCHzae-Q0yftnF3kAu7VFMWQ",
-								"type": "text"
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NjU3ZTQwMTg3YjEzNWU2YWEzMDdlNDEiLCJ1c2VybmFtZSI6ImFkbWluYiIsIm5hbWUiOiJBRE1JTkIiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3MTcxNjM1NzYsImV4cCI6MTcxNzE3NDM3Nn0.FnmyA2pwjyXOQLH340ekdDPyJgqKrDLKebIaWlgc0tk"
 							}
 						],
 						"body": {
@@ -152,99 +97,19 @@
 					"response": []
 				},
 				{
-					"name": "login",
+					"name": "Register Client",
 					"request": {
 						"method": "POST",
 						"header": [
 							{
-								"key": "Cache-Control",
-								"value": "no-cache",
-								"name": "cache-control",
-								"type": "text"
-							},
-							{
-								"key": "Postman-Token",
-								"value": "<calculated when request is sent>",
-								"name": "postman-token",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"name": "content-type",
-								"type": "text"
-							},
-							{
-								"key": "Content-Length",
-								"value": "<calculated when request is sent>",
-								"name": "content-length",
-								"type": "text"
-							},
-							{
-								"key": "Host",
-								"value": "<calculated when request is sent>",
-								"name": "host",
-								"type": "text"
-							},
-							{
-								"key": "User-Agent",
-								"value": "PostmanRuntime/7.32.1",
-								"name": "user-agent",
-								"type": "text"
-							},
-							{
 								"key": "Accept",
-								"value": "*/*",
-								"name": "accept",
-								"type": "text"
+								"value": "application/json"
 							},
 							{
-								"key": "Accept-Encoding",
-								"value": "gzip, deflate, br",
-								"name": "accept-encoding",
-								"type": "text"
-							},
-							{
-								"key": "Connection",
-								"value": "keep-alive",
-								"name": "connection",
-								"type": "text"
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NjU1MTM3NDM4MmY1MjUxYTY5MWMwNDkiLCJ1c2VybmFtZSI6ImFkbWluYiIsIm5hbWUiOiJBRE1JTkIiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3MTY4NjEwNzAsImV4cCI6MTcxNjg3MTg3MH0.CAe_4HvwqFwSg3sd6TJHiO2ofQlKfqf1sbvluFRKrp8"
 							}
 						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "username",
-									"value": "ADMINB",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "ADMINB",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "localhost:2670/user/login",
-							"host": [
-								"localhost"
-							],
-							"port": "2670",
-							"path": [
-								"user",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Register Client",
-					"request": {
-						"method": "POST",
-						"header": [],
 						"body": {
 							"mode": "urlencoded",
 							"urlencoded": [
@@ -309,6 +174,114 @@
 							"path": [
 								"user",
 								"registerC"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loginU",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:2670/user/login",
+							"host": [
+								"localhost"
+							],
+							"port": "2670",
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleted",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NjU1MTI2YWI5MWE3NzM3M2VmODU0NGIiLCJ1c2VybmFtZSI6Iml0emVwIiwibmFtZSI6Ikl0emVwIiwicm9sZSI6IkNMSUVOVCIsImlhdCI6MTcxNjg1MTU4OCwiZXhwIjoxNzE2ODYyMzg4fQ.1XZEaNIzxGYtWeM2hkogoIemtJmoNy8mPSKBSGFnlP8"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "confirmation",
+									"value": "si",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:2670/user/deleteU/6655126ab91a77373ef8544b",
+							"host": [
+								"localhost"
+							],
+							"port": "2670",
+							"path": [
+								"user",
+								"deleteU",
+								"6655126ab91a77373ef8544b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NjU3ZTQwMTg3YjEzNWU2YWEzMDdlNDEiLCJ1c2VybmFtZSI6ImFkbWluYiIsIm5hbWUiOiJBRE1JTkIiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3MTcwMzYyMzksImV4cCI6MTcxNzA0NzAzOX0.7xXIgBPJiJcRdaUU8QkcUVLo73QqUXOa_NiqDZu13Go"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "duerman a claro",
+									"type": "text"
+								},
+								{
+									"key": "DPI",
+									"value": "12345678901235",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:2670/user/updateUAd/66553aeb70dd11fadeee13b5",
+							"host": [
+								"localhost"
+							],
+							"port": "2670",
+							"path": [
+								"user",
+								"updateUAd",
+								"66553aeb70dd11fadeee13b5"
 							]
 						}
 					},
@@ -566,6 +539,125 @@
 								"search"
 							]
 						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "test",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:2670/accounts/register",
+							"host": [
+								"localhost"
+							],
+							"port": "2670",
+							"path": [
+								"accounts",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listar",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Favorite",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "alias",
+									"value": "panfilo",
+									"type": "text"
+								},
+								{
+									"key": "accountFavorite",
+									"value": "66593606f3022a8b50afe7f3",
+									"type": "text"
+								},
+								{
+									"key": "user",
+									"value": "66553a3c5a822235f2b34458",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:2670/favorite/register",
+							"host": [
+								"localhost"
+							],
+							"port": "2670",
+							"path": [
+								"favorite",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:2670/favorite/register",
+							"host": [
+								"localhost"
+							],
+							"port": "2670",
+							"path": [
+								"favorite",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "obtener",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}
