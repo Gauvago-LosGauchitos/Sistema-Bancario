@@ -66,6 +66,15 @@ export const registerAd = async (req, res) => {
         data.role = 'ADMIN'
         let user = new User(data)
         await user.save()
+        //Crea una cuenta bancaria para el usuario
+        let accountData = {
+            user: user._id,
+            availableBalance: 0,
+            creationDate: new Date()
+        }
+        let account = new Account(accountData)
+        await account.save()
+
         return res.send({
             message: `Registered successfully, can be logged with username ${user.username}`
         })
@@ -100,7 +109,7 @@ export const registerC = async (req, res) => {
         let user = new User(data)
         await user.save()
 
-        // Crear una cuenta bancaria para el usuario
+        //Crea una cuenta bancaria para el usuario
         let accountData = {
             user: user._id,
             availableBalance: 0,
