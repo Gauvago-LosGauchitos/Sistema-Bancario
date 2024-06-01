@@ -50,14 +50,96 @@ export const register = async (req, res) => {
     }
 }
 
-//Listar accounts
 
-export const obtener = async (req, res) => {
+//Delete 
+
+export const eliminarA = async (req, res) => {
     try {
-        let data = await Accounts.find()
+        const { id } = req.params
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).send({ message: 'El ID de la cuenta no es válido.' })
+        }
+
+        const account = await Accounts.findById(id)
+
+        if (!account) {
+            return res.status(404).send({ message: 'Cuenta no encontrada.' })
+        }
+        if (account.availableBalance !== 0) {
+            return res.status(400).send({ message: 'No se puede eliminar la cuenta. El balance disponible debe ser cero.' })
+        }
+
+        await Accounts.findByIdAndDelete(id)
+        return res.send({ message: 'Cuenta eliminada con éxito.' })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ message: 'Error eliminando la cuenta', error })
+    }
+}
+
+// Buscar cuentas por numero de cuenta o ID
+export const searchA = async (req, res) => {
+    try {
+        let { search, searchId } = req.body;
+        if (search) {
+            search = search.trim();
+        }
+
+        let accounts;
+
+        if (search && searchId) {
+            // Buscar por numero de cuenta o por ID
+            accounts = await Accounts.find({
+                $or: [
+                    { accountNumber: search },
+                    { _id: searchId }
+                ]
+            }).select('-__v').select('-_id'); // esto hace que quite el __v
+        } else if (search) {
+            // Buscar solo por numero de cuenta
+            accounts = await Accounts.find({ accountNumber: search }).select('-__v').select('-_id');
+        } else if (searchId) {
+            // Buscar solo por ID
+            accounts = await Accounts.find({ _id: searchId }).select('-__v').select('-_id');
+        } else {
+            return res.status(400).send({ message: 'No se proporcionaron parámetros de búsqueda' });
+        }
+
+        if (!accounts || accounts.length === 0) {
+            return res.status(404).send({ message: 'Cuenta no encontrada' });
+        }
+
+        return res.send({ message: 'Cuenta encontrada', accounts });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ message: 'Error buscando la cuenta', error: err });
+    }
+};
+
+
+// Filtrar cuentas
+export const filterAccounts = async (req, res) => {
+    try {
+        const { user, creationDate } = req.query
+        const query = {}
+
+        if (user && mongoose.Types.ObjectId.isValid(user)) {
+            query.user = user
+        }
+
+        if (creationDate) {
+            const parsedDate = new Date(creationDate)
+            if (!isNaN(parsedDate.getTime())) {
+                query.creationDate = parsedDate
+            } else {
+                return res.status(400).send({ message: 'Fecha de creación no válida.' })
+            }
+        }
+
+        let data = await Accounts.find(query).select('-__v').select('-_id');
         return res.send({ data })
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ message: 'the information cannot be brought' })
+        return res.status(500).send({ message: 'Error filtrando las cuentas', error })
     }
 }

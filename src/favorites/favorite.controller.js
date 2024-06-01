@@ -51,7 +51,7 @@ export const deleteF = async(req, res)=>{
 //Listar
 export const obtener = async (req, res) => {
     try {
-        const favorites = await Favorite.find().populate('user', 'name').populate('accountFavorite', 'accountNumber')
+        const favorites = await Favorite.find().populate('user', 'name').populate('accountFavorite', 'accountNumber').select('-__v').select('-_id');
         if (!favorites || favorites.length === 0) {
             return res.status(404).json({ message: 'No se encontraron favoritos' })
         }
