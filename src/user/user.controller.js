@@ -43,6 +43,7 @@ export const defaultUser = async () => {
     }
 }
 
+
 //registro Admin
 export const registerAd = async (req, res) => {
     try {
