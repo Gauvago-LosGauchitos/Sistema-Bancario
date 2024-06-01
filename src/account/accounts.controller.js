@@ -77,25 +77,44 @@ export const eliminarA = async (req, res) => {
     }
 }
 
-// Obtener una cuenta específica
-export const getAccount = async (req, res) => {
+// Buscar cuentas por numero de cuenta o ID
+export const searchA = async (req, res) => {
     try {
-        const { id } = req.params
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).send({ message: 'El ID de la cuenta no es válido.' })
+        let { search, searchId } = req.body;
+        if (search) {
+            search = search.trim();
         }
 
-        const account = await Accounts.findById(id)
-        if (!account) {
-            return res.status(404).send({ message: 'Cuenta no encontrada.' })
+        let accounts;
+
+        if (search && searchId) {
+            // Buscar por numero de cuenta o por ID
+            accounts = await Accounts.find({
+                $or: [
+                    { accountNumber: search },
+                    { _id: searchId }
+                ]
+            }).select('-__v'); // esto hace que quite el __v
+        } else if (search) {
+            // Buscar solo por numero de cuenta
+            accounts = await Accounts.find({ accountNumber: search }).select('-__v');
+        } else if (searchId) {
+            // Buscar solo por ID
+            accounts = await Accounts.find({ _id: searchId }).select('-__v');
+        } else {
+            return res.status(400).send({ message: 'No se proporcionaron parámetros de búsqueda' });
         }
 
-        return res.send({ data: account })
-    } catch (error) {
-        console.error(error)
-        return res.status(500).send({ message: 'Error obteniendo la cuenta', error })
+        if (!accounts || accounts.length === 0) {
+            return res.status(404).send({ message: 'Cuenta no encontrada' });
+        }
+
+        return res.send({ message: 'Cuenta encontrada', accounts });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ message: 'Error buscando la cuenta', error: err });
     }
-}
+};
 
 
 // Filtrar cuentas
@@ -117,7 +136,7 @@ export const filterAccounts = async (req, res) => {
             }
         }
 
-        let data = await Accounts.find(query)
+        let data = await Accounts.find(query).select('-__v').select('-_id');
         return res.send({ data })
     } catch (error) {
         console.error(error)
