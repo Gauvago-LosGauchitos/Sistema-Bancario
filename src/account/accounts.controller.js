@@ -94,13 +94,13 @@ export const searchA = async (req, res) => {
                     { accountNumber: search },
                     { _id: searchId }
                 ]
-            }).select('-__v'); // esto hace que quite el __v
+            }).select('-__v').select('-_id'); // esto hace que quite el __v
         } else if (search) {
             // Buscar solo por numero de cuenta
-            accounts = await Accounts.find({ accountNumber: search }).select('-__v');
+            accounts = await Accounts.find({ accountNumber: search }).select('-__v').select('-_id');
         } else if (searchId) {
             // Buscar solo por ID
-            accounts = await Accounts.find({ _id: searchId }).select('-__v');
+            accounts = await Accounts.find({ _id: searchId }).select('-__v').select('-_id');
         } else {
             return res.status(400).send({ message: 'No se proporcionaron parámetros de búsqueda' });
         }
