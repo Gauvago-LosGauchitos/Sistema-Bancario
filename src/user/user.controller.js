@@ -26,7 +26,6 @@ export const defaultUser = async () => {
         let data = {
             name: 'ADMINB',
             username: 'ADMINB',
-            accountNumber: '1111',
             DPI: '3184155340717',
             address: 'calle solovino',
             phone: '12345678',
