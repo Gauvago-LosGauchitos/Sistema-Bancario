@@ -1,6 +1,7 @@
 'use strict'
 
 import User from "./user.model.js"
+import Account from '../account/accounts.model.js'
 import { generateJwt } from '../utils/jwt.js'
 import { encrypt, checkPassword, checkUpdateUser, checkUpdateUserSelf } from '../utils/validator.js'
 import jwt from 'jsonwebtoken'
@@ -98,13 +99,22 @@ export const registerC = async (req, res) => {
         data.role = 'CLIENT'
         let user = new User(data)
         await user.save()
+
+        // Crear una cuenta bancaria para el usuario
+        let accountData = {
+            user: user._id,
+            availableBalance: 0,
+            creationDate: new Date()
+        }
+        let account = new Account(accountData)
+        await account.save()
+        
         return res.send({ message: `Registered successfully, can be logged with username ${user.username}` })
     } catch (err) {
         console.error(err)
         return res.status(500).send({ message: 'Error registering user', err: err })
     }
 }
-
 
 // login
 export const login = async (req, res) => {
@@ -263,3 +273,4 @@ export const deleteU = async (req, res) => {
         return res.status(500).send({ message: 'Error deleting account' })
     }
 }
+

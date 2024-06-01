@@ -11,11 +11,6 @@ const userSchema = mongoose.Schema({
         lowercase: true,
         required: true
     },
-    accountNumber: {
-        type: Number,
-        unique: true,
-        required: true
-    },
     DPI: {
         type : Number,
         unique: true,

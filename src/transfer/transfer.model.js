@@ -21,7 +21,8 @@ const transferSchema = mongoose.Schema({
     },
     motion:{
         type: String,
-        enum:['TRANSFER', 'BUYED'],
+        enum:['TRANSFER', 'BUYED','DEPOSIT'],
+        uppercase: true,
         required: true
     },
     services:{

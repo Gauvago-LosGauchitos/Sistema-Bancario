@@ -23,9 +23,11 @@ export const buyed = async (req, res) => {
         let uid = req.user._id
         let data = req.body 
         
-
+        
 
     } catch (error) {
         
     }
 }
+
+
