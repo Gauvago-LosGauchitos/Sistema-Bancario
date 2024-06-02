@@ -7,17 +7,14 @@ const transferSchema = mongoose.Schema({
     },
     amount: {
         type: Number,
-        required: true
     },
     rootAccount: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'accounts',
-        required: true
     },
     recipientAccount:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'accounts',
-        required: true
+        ref: 'accounts'
     },
     motion:{
         type: String,
@@ -28,7 +25,6 @@ const transferSchema = mongoose.Schema({
     services:{
         type: mongoose.Schema.Types.ObjectId,
         ref:'services',
-        required: true
     }
 })
 

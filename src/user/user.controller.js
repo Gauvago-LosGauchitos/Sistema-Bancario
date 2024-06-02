@@ -66,10 +66,10 @@ export const registerAd = async (req, res) => {
         data.role = 'ADMIN'
         let user = new User(data)
         await user.save()
-        //Crea una cuenta bancaria para el usuario
+        //Crea una cuenta 
         let accountData = {
             user: user._id,
-            availableBalance: 0,
+            availableBalance: 200,
             creationDate: new Date()
         }
         let account = new Account(accountData)
@@ -109,10 +109,10 @@ export const registerC = async (req, res) => {
         let user = new User(data)
         await user.save()
 
-        //Crea una cuenta bancaria para el usuario
+        //Crea una cuenta
         let accountData = {
             user: user._id,
-            availableBalance: 0,
+            availableBalance: 200,
             creationDate: new Date()
         }
         let account = new Account(accountData)

@@ -1,113 +1,23 @@
 {
 	"info": {
-		"_postman_id": "a0f6b198-844d-4935-b491-a5eb16b33fa4",
-		"name": "Sistema Bancario",
+		"_postman_id": "3475fe7e-53ba-4116-9958-2c65b356f663",
+		"name": "Bauchito",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "35281543",
-		"_collection_link": "https://gold-escape-415444.postman.co/workspace/My-Workspace~fb53fd72-a75d-45a2-8cf7-1bd6425837a6/collection/35281543-a0f6b198-844d-4935-b491-a5eb16b33fa4?action=share&source=collection_link&creator=35281543"
+		"_exporter_id": "35396673",
+		"_collection_link": "https://galactic-eclipse-299413.postman.co/workspace/Team-Workspace~88088012-16e2-41b8-8057-e5866f96cdde/collection/35396673-3475fe7e-53ba-4116-9958-2c65b356f663?action=share&source=collection_link&creator=35396673"
 	},
 	"item": [
 		{
 			"name": "user",
 			"item": [
 				{
-					"name": "Register Admin",
-					"request": {
-						"auth": {
-							"type": "bearer"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NjU3ZTQwMTg3YjEzNWU2YWEzMDdlNDEiLCJ1c2VybmFtZSI6ImFkbWluYiIsIm5hbWUiOiJBRE1JTkIiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3MTcxNjM1NzYsImV4cCI6MTcxNzE3NDM3Nn0.FnmyA2pwjyXOQLH340ekdDPyJgqKrDLKebIaWlgc0tk"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "name",
-									"value": "Diego",
-									"type": "text"
-								},
-								{
-									"key": "username",
-									"value": "Diego",
-									"type": "text"
-								},
-								{
-									"key": "accountNumber",
-									"value": "2019001",
-									"type": "text"
-								},
-								{
-									"key": "DPI",
-									"value": "3184155340101",
-									"type": "text"
-								},
-								{
-									"key": "address",
-									"value": "Zona 7",
-									"type": "text"
-								},
-								{
-									"key": "phone",
-									"value": "12345678",
-									"type": "text"
-								},
-								{
-									"key": "email",
-									"value": "diego@gmail.com",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "12345678",
-									"type": "text"
-								},
-								{
-									"key": "nameOfWork",
-									"value": "nose",
-									"type": "text"
-								},
-								{
-									"key": "monthlyIncome",
-									"value": "500",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "localhost:2670/user/registerAd",
-							"host": [
-								"localhost"
-							],
-							"port": "2670",
-							"path": [
-								"user",
-								"registerAd"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Register Client",
 					"request": {
 						"method": "POST",
 						"header": [
 							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NjU1MTM3NDM4MmY1MjUxYTY5MWMwNDkiLCJ1c2VybmFtZSI6ImFkbWluYiIsIm5hbWUiOiJBRE1JTkIiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3MTY4NjEwNzAsImV4cCI6MTcxNjg3MTg3MH0.CAe_4HvwqFwSg3sd6TJHiO2ofQlKfqf1sbvluFRKrp8"
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NjVhOWQzNzY5YjU0ZjJiZWVjZjRkMTYiLCJ1c2VybmFtZSI6ImFkbWluYiIsIm5hbWUiOiJBRE1JTkIiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3MTcyOTM2MTMsImV4cCI6MTcxNzMwNDQxM30.iRCYBguOHt36zR8xcyf6-o6wv9dQ9_pvKGHSFw3_g7U"
 							}
 						],
 						"body": {
@@ -115,7 +25,7 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "Itzep",
+									"value": "Christian",
 									"type": "text"
 								},
 								{
@@ -126,11 +36,12 @@
 								{
 									"key": "accountNumber",
 									"value": "213",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "DPI",
-									"value": "12345678901234",
+									"value": "0987654321123",
 									"type": "text"
 								},
 								{
@@ -145,7 +56,7 @@
 								},
 								{
 									"key": "email",
-									"value": "negro",
+									"value": "itzep",
 									"type": "text"
 								},
 								{
@@ -180,10 +91,25 @@
 					"response": []
 				},
 				{
-					"name": "loginU",
+					"name": "login",
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "itzep",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345678",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
 							"raw": "localhost:2670/user/login",
 							"host": [
@@ -199,56 +125,13 @@
 					"response": []
 				},
 				{
-					"name": "deleted",
+					"name": "RegisterAdmin",
 					"request": {
-						"method": "DELETE",
+						"method": "POST",
 						"header": [
 							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NjU1MTI2YWI5MWE3NzM3M2VmODU0NGIiLCJ1c2VybmFtZSI6Iml0emVwIiwibmFtZSI6Ikl0emVwIiwicm9sZSI6IkNMSUVOVCIsImlhdCI6MTcxNjg1MTU4OCwiZXhwIjoxNzE2ODYyMzg4fQ.1XZEaNIzxGYtWeM2hkogoIemtJmoNy8mPSKBSGFnlP8"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "confirmation",
-									"value": "si",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "localhost:2670/user/deleteU/6655126ab91a77373ef8544b",
-							"host": [
-								"localhost"
-							],
-							"port": "2670",
-							"path": [
-								"user",
-								"deleteU",
-								"6655126ab91a77373ef8544b"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "update",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NjU3ZTQwMTg3YjEzNWU2YWEzMDdlNDEiLCJ1c2VybmFtZSI6ImFkbWluYiIsIm5hbWUiOiJBRE1JTkIiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3MTcwMzYyMzksImV4cCI6MTcxNzA0NzAzOX0.7xXIgBPJiJcRdaUU8QkcUVLo73QqUXOa_NiqDZu13Go"
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NjVhOWQzNzY5YjU0ZjJiZWVjZjRkMTYiLCJ1c2VybmFtZSI6ImFkbWluYiIsIm5hbWUiOiJBRE1JTkIiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3MTcyNzcwMDUsImV4cCI6MTcxNzI4NzgwNX0.jqnSBvBeK9nSO82Fqc04FOpvh9hVAgC1ZPsVrdoukLQ"
 							}
 						],
 						"body": {
@@ -256,32 +139,60 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "duerman a claro",
+									"value": "Itzep",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "ceil",
 									"type": "text"
 								},
 								{
 									"key": "DPI",
-									"value": "12345678901235",
+									"value": "1234567892345",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Oa",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "12345678",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "itzep@gmail.com",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "12345",
-									"type": "text",
-									"disabled": true
+									"value": "12345678",
+									"type": "text"
+								},
+								{
+									"key": "nameOfWork",
+									"value": "simon",
+									"type": "text"
+								},
+								{
+									"key": "monthlyIncome",
+									"value": "500",
+									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "localhost:2670/user/updateUAd/66553aeb70dd11fadeee13b5",
+							"raw": "localhost:2670/user/registerAd",
 							"host": [
 								"localhost"
 							],
 							"port": "2670",
 							"path": [
 								"user",
-								"updateUAd",
-								"66553aeb70dd11fadeee13b5"
+								"registerAd"
 							]
 						}
 					},
@@ -545,50 +456,93 @@
 			]
 		},
 		{
-			"name": "Account",
+			"name": "Tranfer",
 			"item": [
 				{
-					"name": "test",
-					"request": {
-						"method": "GET",
-						"header": []
-					},
-					"response": []
-				},
-				{
-					"name": "register",
+					"name": "transfer",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NjViZDI2OGE2YjRjNzg0YzRmMzQ2Y2YiLCJ1c2VybmFtZSI6Iml0emVwIiwibmFtZSI6IkNocmlzdGlhbiIsInJvbGUiOiJDTElFTlQiLCJpYXQiOjE3MTcyOTU5NzcsImV4cCI6MTcxNzMwNjc3N30.Ap5RPWDoNDWYxCWP15pjFTPrVxvMz932_xpinoOg44w"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "rootAccount",
+									"value": "3106652716",
+									"type": "text"
+								},
+								{
+									"key": "recipientAccount",
+									"value": "4842768208",
+									"type": "text"
+								},
+								{
+									"key": "amount",
+									"value": "50",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
-							"raw": "localhost:2670/accounts/register",
+							"raw": "localhost:2670/transfer/transfer",
 							"host": [
 								"localhost"
 							],
 							"port": "2670",
 							"path": [
-								"accounts",
-								"register"
+								"transfer",
+								"transfer"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "listar",
+					"name": "buyed",
 					"request": {
-						"method": "GET",
-						"header": []
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NjViZDI2OGE2YjRjNzg0YzRmMzQ2Y2YiLCJ1c2VybmFtZSI6Iml0emVwIiwibmFtZSI6IkNocmlzdGlhbiIsInJvbGUiOiJDTElFTlQiLCJpYXQiOjE3MTcyOTU5NzcsImV4cCI6MTcxNzMwNjc3N30.Ap5RPWDoNDWYxCWP15pjFTPrVxvMz932_xpinoOg44w"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "rootAccount",
+									"value": "3106652716",
+									"type": "text"
+								},
+								{
+									"key": "services",
+									"value": "665a9d3969b54f2beecf4d1b",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:2670/transfer/buyed",
+							"host": [
+								"localhost"
+							],
+							"port": "2670",
+							"path": [
+								"transfer",
+								"buyed"
+							]
+						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "Favorite",
-			"item": [
+				},
 				{
-					"name": "register",
+					"name": "deposit",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -596,68 +550,28 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"key": "alias",
-									"value": "panfilo",
+									"key": "recipientAccount",
+									"value": "3106652716",
 									"type": "text"
 								},
 								{
-									"key": "accountFavorite",
-									"value": "66593606f3022a8b50afe7f3",
-									"type": "text"
-								},
-								{
-									"key": "user",
-									"value": "66553a3c5a822235f2b34458",
+									"key": "amount",
+									"value": "150.50",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "localhost:2670/favorite/register",
+							"raw": "localhost:2670/transfer/deposit",
 							"host": [
 								"localhost"
 							],
 							"port": "2670",
 							"path": [
-								"favorite",
-								"register"
+								"transfer",
+								"deposit"
 							]
 						}
-					},
-					"response": []
-				},
-				{
-					"name": "delete",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "localhost:2670/favorite/register",
-							"host": [
-								"localhost"
-							],
-							"port": "2670",
-							"path": [
-								"favorite",
-								"register"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "obtener",
-					"request": {
-						"method": "GET",
-						"header": []
-					},
-					"response": []
-				},
-				{
-					"name": "Update",
-					"request": {
-						"method": "GET",
-						"header": []
 					},
 					"response": []
 				}
