@@ -2,6 +2,7 @@
 
 import User from "./user.model.js"
 import Account from '../account/accounts.model.js'
+import Transfer from "../transfer/transfer.model.js"
 import { generateJwt } from '../utils/jwt.js'
 import { encrypt, checkPassword, checkUpdateUser, checkUpdateUserSelf } from '../utils/validator.js'
 import jwt from 'jsonwebtoken'

@@ -123,3 +123,29 @@ export const deposit = async (req, res) =>{
     }
 }
 
+export const getTransferHistory = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        // Obtener las cuentas del usuario
+        const userAccounts = await Account.find({ user: userId });
+        const accountIds = userAccounts.map(account => account._id);
+
+        // Obtener las transferencias relacionadas con las cuentas del usuario
+        const transfers = await Transfer.find({
+            $or: [
+                { rootAccount: { $in: accountIds } },
+                { recipientAccount: { $in: accountIds } }
+            ]
+        }).sort({ date: -1 });
+
+        // Enviar respuesta con las transferencias
+        res.status(200).send({
+            message: 'User transfer history retrieved successfully',
+            transfers
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: 'Error retrieving user transfer history', error: error.message });
+    }
+};
