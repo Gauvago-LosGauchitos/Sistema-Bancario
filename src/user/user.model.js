@@ -46,6 +46,10 @@ const userSchema = mongoose.Schema({
         minLength: 101,
         required: true
     },
+    imgProfile: {
+        type: String,
+        required: false
+    },
     role: {
         type: String,
         uppercase: true,

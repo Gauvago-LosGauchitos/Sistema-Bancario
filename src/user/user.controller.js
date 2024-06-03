@@ -284,3 +284,17 @@ export const deleteU = async (req, res) => {
     }
 }
 
+//Busqueda de usuario Logueado
+export const getLoggedUser = async (req, res) => {
+    try {
+        const uid = req.user._id
+        let userLogged = await User.findById( uid )
+        if (!userLogged) {
+            return res.status(404).send({ message: 'User not found' })
+        }
+        return res.send({ userLogged })
+    } catch (err) {
+        console.error(err)
+        return res.status(500).send({ message: 'Error getting user' })
+    }
+}
