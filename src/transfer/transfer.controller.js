@@ -8,6 +8,7 @@ export const test = (req, res)=>{
     return res.send({message: 'Test is running'})
 }
 
+//Tranferencia
 export const transfer = async (req, res) => {
     try {
         const uid = req.user._id
@@ -48,6 +49,7 @@ export const transfer = async (req, res) => {
     }
 }
 
+//Compra
 export const buyed = async (req, res) => {
     try {
         let uid = req.user._id
@@ -95,6 +97,7 @@ export const buyed = async (req, res) => {
     }
 }
 
+//Deposito
 export const deposit = async (req, res) =>{
     try {
         const { recipientAccount, amount, motion} = req.body
@@ -123,6 +126,96 @@ export const deposit = async (req, res) =>{
     }
 }
 
+//Revertir transferencia
+export const revertTransfer = async (req, res) => {
+    try {
+        const {id} = req.body
+        const transfer = await Transfer.findById(id)
+
+        if (!transfer) {
+            return res.status(404).send({ message: 'Transfer not found' })
+        }
+
+        // Medir un minuto
+        const now = new Date();
+        if ((now - transfer.date) > 60000) {
+            return res.status(400).send({ message: 'Cannot revert transfer after 1 minute' })
+        }
+
+        //Ver si no ha sido revertida antes
+        if (transfer.reverted) {
+            return res.status(400).send({ message: 'Transfer has already been reverted' })
+        }
+
+        const rootAccount = await Account.findById(transfer.rootAccount)
+        const recipientAccount = await Account.findById(transfer.recipientAccount)
+
+        //Convertir a decimal pa q no pete
+        const amountR = parseFloat(transfer.amount);
+        if (isNaN(amountR)) {
+            return res.status(400).send({ message: 'Invalid transfer amount' });
+        }
+
+        // Revertir
+        rootAccount.availableBalance += amountR
+        recipientAccount.availableBalance -= amountR
+
+        await rootAccount.save()
+        await recipientAccount.save()
+
+        transfer.reverted = true
+        await transfer.save()
+
+        return res.status(200).send({ message: 'Transfer successfully reverted', transfer })
+    } catch (err) {
+        console.error(err)
+        return res.status(500).send({ message: 'Revert transfer error' })
+    }
+}
+
+//Revertir deposito
+export const revertDeposit = async (req, res) => {
+    try {
+        const { id} = req.body
+        const deposit = await Transfer.findById(id)
+        if (!deposit) {
+            return res.status(404).send({ message: 'Deposit not found' })
+        }
+        //Medir un minuto
+        const now = new Date()
+        if ((now - deposit.date) > 60000) {
+            return res.status(400).send({ message: 'Cannot revert deposit after 1 minute' })
+        }
+
+
+        //Ver si no ha sido revertida antes
+        if (deposit.reverted) {
+            return res.status(400).send({ message: 'Deposit has already been reverted' })
+        }
+
+        const recipientAccount = await Account.findById(deposit.recipientAccount);
+
+        // Convertir a decimal pa q no pete
+        const amountR = parseFloat(deposit.amount)
+        if (isNaN(amountR)) {
+            return res.status(400).send({ message: 'Invalid deposit amount' })
+        }
+
+        // Revertir
+        recipientAccount.availableBalance -= amountR
+
+        await recipientAccount.save()
+        deposit.reverted = true
+        await deposit.save()
+
+        return res.status(200).send({ message: 'Deposit successfully reverted', deposit })
+    } catch (err) {
+        console.error(err)
+        return res.status(500).send({ message: 'Revert deposit error' })
+    }
+}
+
+//Historial
 export const getTransferHistory = async (req, res) => {
     try {
         const userId = req.user._id;

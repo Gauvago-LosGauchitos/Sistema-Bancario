@@ -25,6 +25,10 @@ const transferSchema = mongoose.Schema({
     services:{
         type: mongoose.Schema.Types.ObjectId,
         ref:'services',
+    },
+    reverted: {
+        type: Boolean,
+        default: false
     }
 })
 
