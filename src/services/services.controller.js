@@ -25,8 +25,7 @@ export const defaultServices = async (req, res) => {
         const servicesDefault = [
             'Seguro de vida',
             'Asesoria financiera',
-            'Dolares',
-            'Euros'
+            'Dolares'
         ];
 
         const existingServices = await Services.find({ name: { $in: servicesDefault } });
