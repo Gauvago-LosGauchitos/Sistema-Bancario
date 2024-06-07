@@ -71,7 +71,7 @@ export const buyed = async (req, res) => {
         }
 
         // Ver que tengan saldo suficiente
-        if (accountRoot.balance < service.price) {
+        if (accountRoot.availableBalance < service.price) {
             return res.status(400).send({ message: 'Insufficient balance in root account' })
         }
 
