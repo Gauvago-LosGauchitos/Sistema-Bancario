@@ -298,3 +298,37 @@ export const getLoggedUser = async (req, res) => {
         return res.status(500).send({ message: 'Error getting user' })
     }
 }
+
+//listar admins
+export const listAdmin = async(req, res) =>{
+    try {
+        let admins = await User.find({ role: 'admin' })
+        if (!admins) {
+            return res.status(404).send({ message: 'No admins found' })
+            }
+            return res.send({ admins })
+        
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ message: 'Error getting user' })
+        
+    }
+
+}
+
+//listar usuarios
+export const listUsers = async(req, res) =>{
+    try {
+        let users = await User.find({ role: 'CLIENT' })
+        if (!users) {
+            return res.status(404).send({ message: 'No clients found' })
+            }
+            return res.send({ users })
+        
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ message: 'Error getting user' })
+        
+    }
+
+}
