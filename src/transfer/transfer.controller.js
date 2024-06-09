@@ -242,3 +242,31 @@ export const getTransferHistory = async (req, res) => {
         res.status(500).send({ message: 'Error retrieving user transfer history', error: error.message });
     }
 };
+
+// Historial (últimos 5 movimientos)
+export const getLastFiveTransfers = async (req, res) => {
+    try {
+        const userId = req.user._id
+
+        // Obtener las cuentas del usuario
+        const userAccounts = await Account.find({ user: userId })
+        const accountIds = userAccounts.map(account => account._id)
+
+        // Obtener las transferencias relacionadas con las cuentas del usuario
+        const transfers = await Transfer.find({
+            $or: [
+                { rootAccount: { $in: accountIds } },
+                { recipientAccount: { $in: accountIds } }
+            ]
+        }).sort({ date: -1 }).limit(5)// Esto es lo que hace que solo muestre los ultimos 5 movimientos
+
+        // Enviar respuesta con las transferencias
+        res.status(200).send({
+            message: 'The last five user transfer',
+            transfers
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: 'Error retrieving last five user transfers', error: error.message })
+    }
+};
