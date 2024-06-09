@@ -1,6 +1,6 @@
 import express from 'express'
 
-import {  deleteU, getLoggedUser, listAdmin, listUsers, login, registerAd, registerC, testU, updateUserAd, updateUserSelf } from './user.controller.js';
+import {  deleteU, getLoggedUser, listAdmin, listUsers, login, registerAd, registerC, testU, updateUserAd, updateUserSelf, findUserByUsername } from './user.controller.js';
 import {isAdmin ,validateJwt} from '../middlewares/validate-jwt.js'
 
 const api = express.Router();
@@ -9,10 +9,11 @@ api.get('/testU', testU)
 api.post('/login', login)
 api.post('/registerAd',[validateJwt, isAdmin], registerAd)
 api.post('/registerC',[validateJwt, isAdmin],registerC)
-api.put('/updateUAd/:id', [validateJwt,isAdmin], updateUserAd)
+api.put('/updateUAd', [validateJwt,isAdmin], updateUserAd)
 api.put('/updateU', [validateJwt], updateUserSelf)
-api.delete('/deleteU/:id', [validateJwt],deleteU)
+api.delete('/deleteU', [validateJwt, isAdmin],deleteU)
 api.get('/getLogued', [validateJwt], getLoggedUser)
+api.post('/findUserByUsername',[validateJwt, isAdmin], findUserByUsername);
 api.get('/getAdmins', listAdmin)
 api.get('/getUsers', listUsers)
 

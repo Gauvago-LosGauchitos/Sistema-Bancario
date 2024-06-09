@@ -1,14 +1,16 @@
 'use strict'
 
-import { hash, compare } from 'bcrypt'
+import bcrypt from 'bcrypt';
 
-//encriptar contra
+
+// encriptar contra
 export const encrypt = async (password) => {
     try {
-        return hash(password, 10)
+        const salt = await bcrypt.genSalt(10);  // Asegurémonos de que se genere la sal correctamente
+        return await bcrypt.hash(password, salt);
     } catch (err) {
-        console.error(err)
-        return err
+        console.error(err);
+        return err;
     }
 }
 

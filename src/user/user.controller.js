@@ -48,43 +48,49 @@ export const defaultUser = async () => {
 //registro Admin
 export const registerAd = async (req, res) => {
     try {
-        let data = req.body
+        let data = req.body;
+        console.log(data.username)
         let exists = await User.findOne({
-            $or: [{
-                user: data.username
-            },
-            {
-                email: data.email
-            }
+            $or: [
+                { user: data.username },
+                { email: data.email }
             ]
-        })
+        });
+
         if (exists) {
             return res.status(500).send({
-                message: 'Email or username alredy exists'
-            })
+                message: 'Email or username already exists'
+            });
         }
-        data.password = await encrypt(data.password)
-        data.role = 'ADMIN'
-        let user = new User(data)
-        await user.save()
-        //Crea una cuenta 
+
+        // Encrypt the password
+        data.password = await encrypt(data.password);
+
+        // Set the user role to 'ADMIN'
+        data.role = 'ADMIN';
+
+        // Create a new user
+        let user = new User(data);
+        await user.save();
+
+        // Create a new account
         let accountData = {
             user: user._id,
             availableBalance: 200,
             creationDate: new Date()
-        }
-        let account = new Account(accountData)
-        await account.save()
+        };
+        let account = new Account(accountData);
+        await account.save();
 
         return res.send({
             message: `Registered successfully, can be logged with username ${user.username}`
-        })
+        });
     } catch (err) {
-        console.error(err)
+        console.error(err);
         return res.status(500).send({
             message: 'Error registering user',
             err: err
-        })
+        });
     }
 }
 
@@ -118,7 +124,7 @@ export const registerC = async (req, res) => {
         }
         let account = new Account(accountData)
         await account.save()
-        
+
         return res.send({ message: `Registered successfully, can be logged with username ${user.username}` })
     } catch (err) {
         console.error(err)
@@ -173,20 +179,23 @@ export const login = async (req, res) => {
 //Update de parte de un admin
 export const updateUserAd = async (req, res) => {
     try {
-        const userId = req.params.id;
-        const userData = req.body;
-
-        if (!checkUpdateUser(userData, userId)) {
+        const { username, ...userData } = req.body;  // Extraer username del cuerpo de la solicitud y los demás datos de usuario
+        console.log(userData)
+        console.log(username)
+        if (!username || !userData) {
             return res.status(400).json({ message: 'No se han proporcionado datos para actualizar' });
         }
 
         // Verificar si el usuario es administrador
-        const user = await User.findById(userId);
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
         if (user.role === 'ADMIN') {
             return res.status(403).json({ message: 'No se puede modificar un administrador' });
         }
 
-        // no deja actulizar si se inteta actulizar algunos de estos campos osea Dpi o la contrase;a
+        // No deja actualizar si se intenta actualizar algunos de estos campos, DPI o la contraseña
         let restrictedFields = [];
         if ('DPI' in userData) {
             restrictedFields.push('DPI');
@@ -200,6 +209,7 @@ export const updateUserAd = async (req, res) => {
         if (restrictedFields.length > 0) {
             return res.status(400).json({ message: `No se puede actualizar los campos: ${restrictedFields.join(', ')}` });
         }
+
         // Actualizar campos permitidos
         const updatedUser = {
             name: userData.name,
@@ -207,7 +217,7 @@ export const updateUserAd = async (req, res) => {
             address: userData.address,
             phone: userData.phone,
             email: userData.email,
-            nameOfWork: userData.jobTitle,
+            nameOfWork: userData.nameOfWork,
             monthlyIncome: userData.monthlyIncome,
         };
 
@@ -215,6 +225,36 @@ export const updateUserAd = async (req, res) => {
         if (updatedUser.monthlyIncome < 100) {
             return res.status(400).json({ message: 'Ingresos mensuales deben ser mayores o iguales a Q100' });
         }
+
+        // Actualizar usuario
+        const userUpdated = await User.findOneAndUpdate({ username }, updatedUser, { new: true });
+
+        res.json({ message: 'Usuario actualizado correctamente', user: userUpdated });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al actualizar usuario' });
+    }
+};
+
+//update del mismo usuario a si mismo
+export const updateUserSelf = async (req, res) => {
+    try {
+        const token = req.headers.authorization
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const userId = decoded.id;
+        const userData = req.body;
+
+
+        if (!checkUpdateUserSelf(userData)) {
+            return res.status(400).json({ message: 'No se pueden actualizar los siguientes campos: nombre, DPI, número de cuenta, dirección, nombre de trabajo, ingresos mensuales' });
+        }
+
+        // Actualizar campos permitidos
+        const updatedUser = {
+            nickname: userData.nickname,
+            phone: userData.phone,
+            email: userData.email,
+        };
 
         // Actualizar usuario
         await User.findByIdAndUpdate(userId, updatedUser, { new: true });
@@ -226,69 +266,35 @@ export const updateUserAd = async (req, res) => {
     }
 };
 
-//update del mismo usuario a si mismo
-export const updateUserSelf = async (req, res) => {
-  try {
-    const token = req.headers.authorization
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    const userId = decoded.id;
-    const userData = req.body;
-    
-
-    if (!checkUpdateUserSelf(userData)) {
-      return res.status(400).json({ message: 'No se pueden actualizar los siguientes campos: nombre, DPI, número de cuenta, dirección, nombre de trabajo, ingresos mensuales' });
-    }
-
-    // Actualizar campos permitidos
-    const updatedUser = {
-      nickname: userData.nickname,
-      phone: userData.phone,
-      email: userData.email,
-    };
-
-    // Actualizar usuario
-    await User.findByIdAndUpdate(userId, updatedUser, { new: true });
-
-    res.json({ message: 'Usuario actualizado correctamente' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error al actualizar usuario' });
-  }
-};
-
 
 //Delete
 export const deleteU = async (req, res) => {
     try {
-        let { uid } = req.params.id
-        let { confirmation } = req.body // Agrega un campo de confirmación 
+        const { username } = req.body; // Extraer el username del cuerpo de la solicitud
+        console.log('Deleting user:', username);
 
-        // verifica si el campo confirmation es no que de el siguiente mensaje y que no ejecute nada
-        if (confirmation === 'no') {
-            return res.status(200).send({ message: 'Deletion cancelled by user' })
-        }
-        // verifica si el campo confirmation es si que continue con el proceso de eliminacion al igual que si se pone otra palabra que no sea
-        // si o no que tire el mensaje que solo se puede poner si o no
-        if (confirmation !== 'yes') {
-            return res.status(400).send({ message: 'Please confirm the deletion by providing confirmation: "yes or no"' })
+        if (!username) {
+            return res.status(400).send({ message: 'Username is required' });
         }
 
-        let deletedUser = await User.findOneAndDelete({ _id: uid })
+        const deletedUser = await User.findOneAndDelete({ username });
 
-        if (!deletedUser) return res.status(404).send({ message: 'Account not found and not deleted' })
+        if (!deletedUser) {
+            return res.status(404).send({ message: 'Account not found and not deleted' });
+        }
 
-        return res.send({ message: `Account with username ${deletedUser.username} deleted successfully` })
+        return res.send({ message: `Account with username ${deletedUser.username} deleted successfully` });
     } catch (err) {
-        console.error(err)
-        return res.status(500).send({ message: 'Error deleting account' })
+        console.error(err);
+        return res.status(500).send({ message: 'Error deleting account' });
     }
-}
+};
 
 //Busqueda de usuario Logueado
 export const getLoggedUser = async (req, res) => {
     try {
         const uid = req.user._id
-        let userLogged = await User.findById( uid )
+        let userLogged = await User.findById(uid)
         if (!userLogged) {
             return res.status(404).send({ message: 'User not found' })
         }
@@ -300,35 +306,57 @@ export const getLoggedUser = async (req, res) => {
 }
 
 //listar admins
-export const listAdmin = async(req, res) =>{
+export const listAdmin = async (req, res) => {
     try {
         let admins = await User.find({ role: 'admin' })
         if (!admins) {
             return res.status(404).send({ message: 'No admins found' })
-            }
-            return res.send({ admins })
-        
+        }
+        return res.send({ admins })
+
     } catch (error) {
         console.error(error)
         return res.status(500).send({ message: 'Error getting user' })
-        
+
     }
 
 }
 
 //listar usuarios
-export const listUsers = async(req, res) =>{
+export const listUsers = async (req, res) => {
     try {
         let users = await User.find({ role: 'CLIENT' })
         if (!users) {
             return res.status(404).send({ message: 'No clients found' })
-            }
-            return res.send({ users })
-        
+        }
+        return res.send({ users })
+
     } catch (error) {
         console.error(error)
         return res.status(500).send({ message: 'Error getting user' })
-        
+
     }
 
 }
+
+// Función para buscar un usuario por nombre de usuario
+export const findUserByUsername = async (req, res) => {
+    try {
+        const { username } = req.body;
+
+        if (!username) {
+            return res.status(400).send({ message: 'Username is required in the request body' });
+        }
+
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        return res.send({ user });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ message: 'Error finding user' });
+    }
+};
