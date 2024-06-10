@@ -1,6 +1,6 @@
 import express from 'express'
-import {  buyed, deposit, getLastFiveTransfers, getTransferHistory, revertDeposit, revertTransfer, test, transfer } from './transfer.controller.js';
-import { validateJwt } from '../middlewares/validate-jwt.js';
+import {  buyed, deposit, getAccountsByMovements, getLastFiveTransfers, getTransferHistory, revertDeposit, revertTransfer, test, transfer } from './transfer.controller.js';
+import { isAdmin, validateJwt } from '../middlewares/validate-jwt.js';
 
 const api = express.Router();
 
@@ -13,5 +13,6 @@ api.get('/getTransferHistory',[validateJwt], getTransferHistory)
 api.post('/revertTransfer', [validateJwt], revertTransfer)
 api.post('/revertDeposit', revertDeposit)
 api.get('/getLastFiveTransfers', [validateJwt], getLastFiveTransfers)
+api.get('/getAccountsByMovements', [validateJwt, isAdmin], getAccountsByMovements)
 
 export default api

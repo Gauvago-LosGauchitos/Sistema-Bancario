@@ -270,3 +270,36 @@ export const getLastFiveTransfers = async (req, res) => {
         res.status(500).send({ message: 'Error retrieving last five user transfers', error: error.message })
     }
 };
+
+//Mas moviminetos en orden ascedentes o descendete
+export const getAccountsByMovements = async (req, res) => {
+    try {
+        const accounts = await Account.find();
+
+        // Esto cuenta los movimientos de las cuentas
+        const accountMovements = await Promise.all(accounts.map(async (account) => {
+            const transferCount = await Transfer.countDocuments({
+                $or: [
+                    { rootAccount: account._id },
+                    { recipientAccount: account._id }
+                ]
+            });
+            return {
+                accountNumber: account.accountNumber,
+                movements: transferCount
+            };
+        }));
+
+        // Ordenar las cuentas segn el nummero de movimientos
+        const { order } = req.query
+        accountMovements.sort((a, b) => order === 'asc' ? a.movements - b.movements : b.movements - a.movements);
+
+        res.status(200).send({
+            message: 'Accounts sorted by number of movements',
+            accounts: accountMovements
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: 'Error retrieving accounts by movements', error: error.message });
+    }
+};
