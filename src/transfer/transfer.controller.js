@@ -3,23 +3,28 @@ import Services from '../services/services.model.js'
 import Account from '../account/accounts.model.js'
 
 
-export const test = (req, res)=>{
+export const test = (req, res) => {
     console.log('test is running')
-    return res.send({message: 'Test is running'})
+    return res.send({ message: 'Test is running' })
 }
 
 //Tranferencia
 export const transfer = async (req, res) => {
     try {
         const uid = req.user._id
-        const { rootAccount, recipientAccount, amount } = req.body
+        const { recipientAccount, amount } = req.body
 
-        // buscar las cuentas
-        const accountRoot = await Account.findOne({accountNumber: rootAccount})
-        const accountRecipient = await Account.findOne({accountNumber: recipientAccount})
-        
+        //cuenta del usuario
+        const accountRoot = await Account.findOne({ uid: uid })
+        if (!accountRoot) {
+            return res.status(404).send({ message: 'Root account not found' });
+        }
+
+        // buscar cuenta a la que llegara el dinero
+        //const accountRoot = await Account.findOne({accountNumber: rootAccount})
+        const accountRecipient = await Account.findOne({ accountNumber: recipientAccount })
         //verificar que existan las cuentas
-        if (!accountRoot || !accountRecipient) {
+        if (!accountRecipient) {
             return res.status(404).send({ message: 'Account not found' })
         }
 
@@ -27,6 +32,13 @@ export const transfer = async (req, res) => {
         if (accountRoot.availableBalance < amount) {
             return res.status(400).send({ message: 'Insufficient balance in root account' })
         }
+
+        // Ver que la cantidad no sea mayor a Q2000
+        if (amount > 2000) {
+            return res.status(400).send({ message: 'Cannot transfer more than Q2000 in a single transaction' });
+        }
+
+
 
         //Actulizar los saldos
         accountRoot.availableBalance -= parseFloat(amount)
@@ -42,7 +54,7 @@ export const transfer = async (req, res) => {
             amount: parseFloat(amount),
             motion: 'TRANSFER'
         })
-        await newTransfer.save()   
+        await newTransfer.save()
     } catch (err) {
         console.error(err)
         return res.status(500).send({ message: 'transfer error' })
@@ -53,11 +65,14 @@ export const transfer = async (req, res) => {
 export const buyed = async (req, res) => {
     try {
         let uid = req.user._id
-        const { rootAccount, services } = req.body
+        const { services } = req.body
 
-        // Obtener cuenta por número de cuenta
-        const accountRoot = await Account.findOne({ accountNumber: rootAccount })
-        
+        //cuenta del usuario
+        const accountRoot = await Account.findOne({ uid: uid })
+        if (!accountRoot) {
+            return res.status(404).send({ message: 'Root account not found' });
+        }
+
         //ver que exista la cuenta
         if (!accountRoot) {
             return res.status(404).send({ message: 'Account not found' })
@@ -90,7 +105,7 @@ export const buyed = async (req, res) => {
         await newBuyed.save()
 
         return res.status(200).send({ message: 'Purchase successful', buyed: newBuyed })
-        
+
     } catch (err) {
         console.error(err)
         return res.status(500).send({ message: 'Purchase error' })
@@ -98,12 +113,12 @@ export const buyed = async (req, res) => {
 }
 
 //Deposito
-export const deposit = async (req, res) =>{
+export const deposit = async (req, res) => {
     try {
-        const { recipientAccount, amount, motion} = req.body
+        const { recipientAccount, amount } = req.body
 
         // buscar la cuenta
-        const accountRecipient = await Account.findOne({accountNumber: recipientAccount})
+        const accountRecipient = await Account.findOne({ accountNumber: recipientAccount })
 
         // Actualizar saldo
         accountRecipient.availableBalance += parseFloat(amount)
@@ -129,7 +144,7 @@ export const deposit = async (req, res) =>{
 //Revertir transferencia
 export const revertTransfer = async (req, res) => {
     try {
-        const {id} = req.body
+        const { id } = req.body
         const transfer = await Transfer.findById(id)
 
         if (!transfer) {
@@ -176,7 +191,7 @@ export const revertTransfer = async (req, res) => {
 //Revertir deposito
 export const revertDeposit = async (req, res) => {
     try {
-        const { id} = req.body
+        const { id } = req.body
         const deposit = await Transfer.findById(id)
         if (!deposit) {
             return res.status(404).send({ message: 'Deposit not found' })
