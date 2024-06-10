@@ -271,7 +271,7 @@ export const getLastFiveTransfers = async (req, res) => {
     }
 };
 
-//Mas moviminetos en orden ascedentes o descendete
+//Mas moviminetos en orden ascedentes a descendete
 export const getAccountsByMovements = async (req, res) => {
     try {
         const accounts = await Account.find();
