@@ -6,7 +6,7 @@ const secretKey = '@LlaveSecretaGauchitos@'
 export const generateJwt = async(payload)=>{
     try{
        return jwt.sign(payload, secretKey, {
-        expiresIn: '3h',
+        expiresIn: '6h',
         algorithm: 'HS256'
       })  
     }catch(err){

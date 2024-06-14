@@ -118,7 +118,7 @@ export const registerC = async (req, res) => {
 
         //Crea una cuenta
         let accountData = {
-            user: user._id,
+            client: user._id,
             availableBalance: 200,
             creationDate: new Date()
         }

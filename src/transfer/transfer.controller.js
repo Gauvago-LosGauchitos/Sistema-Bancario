@@ -1,6 +1,7 @@
 import Transfer from "./transfer.model.js"
 import Services from '../services/services.model.js'
 import Account from '../account/accounts.model.js'
+import User from "../user/user.model.js"
 
 
 export const test = (req, res) => {
@@ -11,12 +12,13 @@ export const test = (req, res) => {
 //Tranferencia
 export const transfer = async (req, res) => {
     try {
-        const uid = req.user._id
         const { recipientAccount, amount } = req.body
+        const uid = req.user._id
 
         //cuenta del usuario
-        const accountRoot = await Account.findOne({ uid: uid })
-        if (!accountRoot) {
+        const rootAccount  = await Account.findOne({ client: uid })
+
+        if (!rootAccount ) {
             return res.status(404).send({ message: 'Root account not found' });
         }
 
@@ -29,7 +31,7 @@ export const transfer = async (req, res) => {
         }
 
         // Ver que tengan saldo suficiente
-        if (accountRoot.availableBalance < amount) {
+        if (rootAccount.availableBalance < amount) {
             return res.status(400).send({ message: 'Insufficient balance in root account' })
         }
 
@@ -39,17 +41,16 @@ export const transfer = async (req, res) => {
         }
 
 
-
         //Actulizar los saldos
-        accountRoot.availableBalance -= parseFloat(amount)
+        rootAccount.availableBalance -= parseFloat(amount)
         accountRecipient.availableBalance += parseFloat(amount)
 
-        await accountRoot.save()
+        await rootAccount.save()
         await accountRecipient.save()
 
         //Hacer la transferencia
         const newTransfer = new Transfer({
-            rootAccount: accountRoot._id,
+            rootAccount: rootAccount._id,
             recipientAccount: accountRecipient._id,
             amount: parseFloat(amount),
             motion: 'TRANSFER'
@@ -68,10 +69,12 @@ export const buyed = async (req, res) => {
         const { services } = req.body
 
         //cuenta del usuario
-        const accountRoot = await Account.findOne({ uid: uid })
+        const accountRoot = await Account.findOne({ client: uid })
+        console.log(accountRoot)
         if (!accountRoot) {
             return res.status(404).send({ message: 'Root account not found' });
         }
+        
 
         //ver que exista la cuenta
         if (!accountRoot) {
@@ -79,7 +82,8 @@ export const buyed = async (req, res) => {
         }
 
         // Obtener servicio
-        const service = await Services.findById(services);
+        const service = await Services.findOne({name: services});
+        console.log(service)
         //ver que exista el servicio
         if (!service) {
             return res.status(404).send({ message: 'Service not found' });
@@ -98,7 +102,7 @@ export const buyed = async (req, res) => {
         //Crear  compra
         const newBuyed = new Transfer({
             rootAccount: accountRoot._id,
-            services: services,
+            services: service,
             motion: 'BUYED'
         })
 
@@ -234,23 +238,62 @@ export const revertDeposit = async (req, res) => {
 export const getTransferHistory = async (req, res) => {
     try {
         const userId = req.user._id;
+        console.log(userId)
+
+        const user = await User.findById(userId)
 
         // Obtener las cuentas del usuario
-        const userAccounts = await Account.find({ user: userId });
+        const userAccounts = await Account.find({ client: userId });
+        console.log(userAccounts)
+
+        // Obtener solo los IDs de las cuentas
         const accountIds = userAccounts.map(account => account._id);
 
         // Obtener las transferencias relacionadas con las cuentas del usuario
-        const transfers = await Transfer.find({
+        let transfers = await Transfer.find({
             $or: [
                 { rootAccount: { $in: accountIds } },
                 { recipientAccount: { $in: accountIds } }
             ]
         }).sort({ date: -1 });
 
+        // Iterar sobre las transferencias para manejar la populación condicionalmente
+        for (let i = 0; i < transfers.length; i++) {
+            const transfer = transfers[i];
+
+            // Populación para rootAccount y recipientAccount según corresponda
+            if (transfer.rootAccount) {
+                await transfer.populate({
+                    path: 'rootAccount',
+                    select: 'accountNumber availableBalance',
+                    populate: {
+                        path: 'client',
+                        select: 'name'  
+                    }
+                })
+            }
+            if (transfer.recipientAccount) {
+                await transfer.populate({
+                    path: 'recipientAccount',
+                    select: 'accountNumber',
+                    populate: {
+                        path: 'client',
+                        select: 'name'  
+                    }
+                })
+            }
+
+            // Populación para services si el tipo de transferencia es "BUYED"
+            if (transfer.motion === 'BUYED' && transfer.services) {
+                await transfer.populate('services', 'name')
+            }
+        }
+
         // Enviar respuesta con las transferencias
         res.status(200).send({
             message: 'User transfer history retrieved successfully',
-            transfers
+            transfers,
+            user
         });
     } catch (error) {
         console.error(error);

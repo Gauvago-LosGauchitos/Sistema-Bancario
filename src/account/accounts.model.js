@@ -10,7 +10,7 @@ const accountsSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    user: {
+    client: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
         required: true
