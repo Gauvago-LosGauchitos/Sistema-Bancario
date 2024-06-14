@@ -40,7 +40,27 @@ export const transfer = async (req, res) => {
             return res.status(400).send({ message: 'Cannot transfer more than Q2000 in a single transaction' });
         }
 
-        // Por día no puede transferir más de 10,000
+         // Check if the daily transfer limit of Q10,000 has been exceeded
+        const startToday = new Date();
+        startToday.setHours(0, 0, 0, 0); 
+
+        const endToday = new Date();
+        endToday.setHours(23, 59, 59, 999);
+
+        const transfersToday = await Transfer.find({
+            rootAccount,
+            date: { 
+                $gte: startToday,
+                $lt: endToday
+            }
+        });
+
+        const transferLimit = 10000
+        const totalTransferredToday = transfersToday.reduce((sum, transfer) => sum + transfer.amount, 0);
+        if (parseInt(totalTransferredToday) + parseInt(amount) > transferLimit) {
+          
+            return res.status(400).send({ message: 'Cannot transfer more than Q10,000 in a day' });
+        }
 
 
         //Actulizar los saldos
@@ -58,6 +78,8 @@ export const transfer = async (req, res) => {
             motion: 'TRANSFER'
         })
         await newTransfer.save()
+
+        return res.status(200).send({ message: 'jalo xd' })
     } catch (err) {
         console.error(err)
         return res.status(500).send({ message: 'transfer error' })
