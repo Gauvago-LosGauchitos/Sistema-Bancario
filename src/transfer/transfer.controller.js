@@ -238,13 +238,12 @@ export const revertDeposit = async (req, res) => {
 export const getTransferHistory = async (req, res) => {
     try {
         const userId = req.user._id;
-        console.log(userId)
+        
 
         const user = await User.findById(userId)
 
         // Obtener las cuentas del usuario
         const userAccounts = await Account.find({ client: userId });
-        console.log(userAccounts)
 
         // Obtener solo los IDs de las cuentas
         const accountIds = userAccounts.map(account => account._id);
@@ -304,10 +303,10 @@ export const getTransferHistory = async (req, res) => {
 // Historial (últimos 5 movimientos)
 export const getLastFiveTransfers = async (req, res) => {
     try {
-        const userId = req.user._id
+        const {userId} = req.body
 
         // Obtener las cuentas del usuario
-        const userAccounts = await Account.find({ user: userId })
+        const userAccounts = await Account.find({ client: userId })
         const accountIds = userAccounts.map(account => account._id)
 
         // Obtener las transferencias relacionadas con las cuentas del usuario

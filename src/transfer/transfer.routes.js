@@ -12,7 +12,7 @@ api.post('/deposit', deposit)
 api.get('/getTransferHistory', [validateJwt], getTransferHistory)
 api.post('/revertTransfer', [validateJwt], revertTransfer)
 api.post('/revertDeposit', revertDeposit)
-api.get('/getLastFiveTransfers', [validateJwt], getLastFiveTransfers)
+api.post('/getLastFiveTransfers', [validateJwt, isAdmin], getLastFiveTransfers)
 api.get('/getAccountsByMovements', [validateJwt, isAdmin], getAccountsByMovements)
 
 export default api
