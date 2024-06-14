@@ -40,6 +40,8 @@ export const transfer = async (req, res) => {
             return res.status(400).send({ message: 'Cannot transfer more than Q2000 in a single transaction' });
         }
 
+        // Por día no puede transferir más de 10,000
+
 
         //Actulizar los saldos
         rootAccount.availableBalance -= parseFloat(amount)
@@ -60,7 +62,7 @@ export const transfer = async (req, res) => {
         console.error(err)
         return res.status(500).send({ message: 'transfer error' })
     }
-}
+}   
 
 //Compra
 export const buyed = async (req, res) => {

@@ -6,9 +6,9 @@ import {validateJwt, isAdmin} from '../middlewares/validate-jwt.js'
 const api = express.Router();
 
 api.get('/test', test)
-api.post('/register', register)
+api.post('/register', [validateJwt, isAdmin],register)
 api.get('/listarServices', listarServices)
-api.delete('/deleteS/:id', deleteS)
-api.put('/updateS/:id',updateS)
+api.delete('/deleteS/:id',[validateJwt, isAdmin], deleteS)
+api.put('/updateS/:id',[validateJwt, isAdmin],updateS)
 api.post('/search', search)
 export default api
