@@ -59,7 +59,7 @@ export const transfer = async (req, res) => {
         console.error(err)
         return res.status(500).send({ message: 'transfer error' })
     }
-}
+}   
 
 //Compra
 export const buyed = async (req, res) => {
