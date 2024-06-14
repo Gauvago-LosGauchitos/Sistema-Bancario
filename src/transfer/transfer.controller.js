@@ -82,7 +82,8 @@ export const buyed = async (req, res) => {
         }
 
         // Obtener servicio
-        const service = await Services.findById(services);
+        const service = await Services.findOne({name: services});
+        console.log(service)
         //ver que exista el servicio
         if (!service) {
             return res.status(404).send({ message: 'Service not found' });
@@ -101,7 +102,7 @@ export const buyed = async (req, res) => {
         //Crear  compra
         const newBuyed = new Transfer({
             rootAccount: accountRoot._id,
-            services: services,
+            services: service,
             motion: 'BUYED'
         })
 
@@ -237,11 +238,13 @@ export const revertDeposit = async (req, res) => {
 export const getTransferHistory = async (req, res) => {
     try {
         const userId = req.user._id;
+        console.log(userId)
 
         const user = await User.findById(userId)
 
         // Obtener las cuentas del usuario
-        const userAccounts = await Account.find({ user: userId });
+        const userAccounts = await Account.find({ client: userId });
+        console.log(userAccounts)
 
         // Obtener solo los IDs de las cuentas
         const accountIds = userAccounts.map(account => account._id);
@@ -264,7 +267,7 @@ export const getTransferHistory = async (req, res) => {
                     path: 'rootAccount',
                     select: 'accountNumber availableBalance',
                     populate: {
-                        path: 'user',
+                        path: 'client',
                         select: 'name'  
                     }
                 })
@@ -274,7 +277,7 @@ export const getTransferHistory = async (req, res) => {
                     path: 'recipientAccount',
                     select: 'accountNumber',
                     populate: {
-                        path: 'user',
+                        path: 'client',
                         select: 'name'  
                     }
                 })
