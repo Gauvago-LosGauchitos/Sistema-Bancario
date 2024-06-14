@@ -12,12 +12,13 @@ export const test = (req, res) => {
 //Tranferencia
 export const transfer = async (req, res) => {
     try {
-        const uid = req.user._id
         const { recipientAccount, amount } = req.body
+        const uid = req.user._id
 
         //cuenta del usuario
-        const accountRoot = await Account.findOne({ uid: uid })
-        if (!accountRoot) {
+        const rootAccount  = await Account.findOne({ client: uid })
+
+        if (!rootAccount ) {
             return res.status(404).send({ message: 'Root account not found' });
         }
 
@@ -30,7 +31,7 @@ export const transfer = async (req, res) => {
         }
 
         // Ver que tengan saldo suficiente
-        if (accountRoot.availableBalance < amount) {
+        if (rootAccount.availableBalance < amount) {
             return res.status(400).send({ message: 'Insufficient balance in root account' })
         }
 
@@ -40,17 +41,16 @@ export const transfer = async (req, res) => {
         }
 
 
-
         //Actulizar los saldos
-        accountRoot.availableBalance -= parseFloat(amount)
+        rootAccount.availableBalance -= parseFloat(amount)
         accountRecipient.availableBalance += parseFloat(amount)
 
-        await accountRoot.save()
+        await rootAccount.save()
         await accountRecipient.save()
 
         //Hacer la transferencia
         const newTransfer = new Transfer({
-            rootAccount: accountRoot._id,
+            rootAccount: rootAccount._id,
             recipientAccount: accountRecipient._id,
             amount: parseFloat(amount),
             motion: 'TRANSFER'
@@ -69,7 +69,7 @@ export const buyed = async (req, res) => {
         const { services } = req.body
 
         //cuenta del usuario
-        const accountRoot = await Account.findOne({ user: uid })
+        const accountRoot = await Account.findOne({ client: uid })
         console.log(accountRoot)
         if (!accountRoot) {
             return res.status(404).send({ message: 'Root account not found' });
