@@ -75,7 +75,7 @@ export const registerAd = async (req, res) => {
 
         // Create a new account
         let accountData = {
-            user: user._id,
+            client: user._id,
             availableBalance: 200,
             creationDate: new Date()
         };
