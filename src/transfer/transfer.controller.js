@@ -335,10 +335,26 @@ export const getLastFiveTransfers = async (req, res) => {
         }).sort({ date: -1 }).limit(5);
 
         // Poblar los nombres de los servicios cuando sea aplicable (en caso de BUYED)
-        transfers = await Transfer.populate(transfers, {
-            path: 'services',
-            select: 'name', // Seleccionar solo el campo 'name' del servicio
-        });
+        transfers = await Transfer.populate(transfers, [
+            {
+                path: 'services',
+                select: 'name'
+            },
+            {
+                path: 'rootAccount',
+                populate: {
+                    path: 'client',
+                    select: 'username'
+                }
+            },
+            {
+                path: 'recipientAccount',
+                populate: {
+                    path: 'client',
+                    select: 'username'
+                }
+            }
+        ]);
 
         // Enviar respuesta con las transferencias
         res.status(200).send({
@@ -351,6 +367,7 @@ export const getLastFiveTransfers = async (req, res) => {
     }
 };
 
+
 //Mas moviminetos en orden ascedentes a descendete
 export const getAccountsByMovements = async (req, res) => {
     try {
@@ -361,7 +378,6 @@ export const getAccountsByMovements = async (req, res) => {
             const transferCount = await Transfer.countDocuments({
                 $or: [
                     { rootAccount: account._id },
-                    { recipientAccount: account._id }
                 ]
             });
 
