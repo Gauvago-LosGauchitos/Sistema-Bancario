@@ -16,7 +16,7 @@ import favoriteRoutes from '../src/favorites/favorite.routes.js'
 
 const app = express()
     config();
-    const port = process.env.PORT || 2622
+    const port = process.env.PORT 
 
     app.use(express.urlencoded({extended: false}))
     app.use(express.json())

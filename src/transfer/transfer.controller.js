@@ -94,15 +94,8 @@ export const buyed = async (req, res) => {
 
         //cuenta del usuario
         const accountRoot = await Account.findOne({ client: uid })
-        console.log(accountRoot)
         if (!accountRoot) {
             return res.status(404).send({ message: 'Root account not found' });
-        }
-        
-
-        //ver que exista la cuenta
-        if (!accountRoot) {
-            return res.status(404).send({ message: 'Account not found' })
         }
 
         // Obtener servicio
@@ -327,30 +320,53 @@ export const getTransferHistory = async (req, res) => {
 // Historial (últimos 5 movimientos)
 export const getLastFiveTransfers = async (req, res) => {
     try {
-        const {userId} = req.body
+        const { userId } = req.body;
 
         // Obtener las cuentas del usuario
-        const userAccounts = await Account.find({ client: userId })
-        const accountIds = userAccounts.map(account => account._id)
+        const userAccounts = await Account.find({ client: userId });
+        const accountIds = userAccounts.map(account => account._id);
 
         // Obtener las transferencias relacionadas con las cuentas del usuario
-        const transfers = await Transfer.find({
+        let transfers = await Transfer.find({
             $or: [
                 { rootAccount: { $in: accountIds } },
                 { recipientAccount: { $in: accountIds } }
             ]
-        }).sort({ date: -1 }).limit(5)// Esto es lo que hace que solo muestre los ultimos 5 movimientos
+        }).sort({ date: -1 }).limit(5);
+
+        // Poblar los nombres de los servicios cuando sea aplicable (en caso de BUYED)
+        transfers = await Transfer.populate(transfers, [
+            {
+                path: 'services',
+                select: 'name'
+            },
+            {
+                path: 'rootAccount',
+                populate: {
+                    path: 'client',
+                    select: 'username'
+                }
+            },
+            {
+                path: 'recipientAccount',
+                populate: {
+                    path: 'client',
+                    select: 'username'
+                }
+            }
+        ]);
 
         // Enviar respuesta con las transferencias
         res.status(200).send({
             message: 'The last five user transfer',
             transfers
-        })
+        });
     } catch (error) {
         console.error(error);
-        res.status(500).send({ message: 'Error retrieving last five user transfers', error: error.message })
+        res.status(500).send({ message: 'Error retrieving last five user transfers', error: error.message });
     }
 };
+
 
 //Mas moviminetos en orden ascedentes a descendete
 export const getAccountsByMovements = async (req, res) => {
@@ -362,10 +378,12 @@ export const getAccountsByMovements = async (req, res) => {
             const transferCount = await Transfer.countDocuments({
                 $or: [
                     { rootAccount: account._id },
-                    { recipientAccount: account._id }
                 ]
             });
+
+            const populatedAccount = await Account.populate(account, { path: 'client', select: 'username' });
             return {
+                accountOwner: account.client.username,
                 accountNumber: account.accountNumber,
                 movements: transferCount
             };
