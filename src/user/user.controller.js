@@ -5,6 +5,9 @@ import Account from '../account/accounts.model.js'
 import Transfer from "../transfer/transfer.model.js"
 import { generateJwt } from '../utils/jwt.js'
 import { encrypt, checkPassword, checkUpdateUser, checkUpdateUserSelf } from '../utils/validator.js'
+import { upload } from '../utils/multerConfig.js';
+import fs from 'fs';
+import path from 'path';
 import jwt from 'jsonwebtoken'
 
 
@@ -360,3 +363,51 @@ export const findUserByUsername = async (req, res) => {
         return res.status(500).send({ message: 'Error finding user' });
     }
 };
+
+// Función para manejar la carga de imágenes
+// Función para manejar la carga de imágenes
+export const uploadImage = (req, res) => {
+    upload.single('image')(req, res, async (err) => {
+        if (err) {
+            return res.status(400).send({ message: err.message });
+        }
+
+        try {
+            const { authorization } = req.headers;
+            const secretKey = process.env.SECRET_KEY;
+            const { uid } = jwt.verify(authorization, secretKey);
+
+            // Encuentra al usuario para obtener la URL de la imagen anterior
+            const user = await User.findById(uid);
+            if (!user) {
+                return res.status(404).send({ message: 'User not found' });
+            }
+
+            // Guarda la ruta de la imagen anterior para eliminarla
+            const previousImagePath = user.imgProfile;
+
+            // Lee el nuevo archivo de imagen y conviértelo a base64
+            const imageData = fs.readFileSync(req.file.path);
+            const base64Image = Buffer.from(imageData).toString('base64');
+            const imageUrl = `data:${req.file.mimetype};base64,${base64Image}`;
+
+            // Actualiza el usuario con la nueva URL de la imagen
+            user.imgProfile = imageUrl;
+            await user.save();
+
+            // Elimina la imagen anterior si existe y no está en formato base64
+            if (previousImagePath && fs.existsSync(previousImagePath)) {
+                fs.unlinkSync(previousImagePath);
+            }
+
+            // Elimina el archivo temporal actual
+            fs.unlinkSync(req.file.path);
+
+            return res.send({ message: 'Image uploaded and user updated successfully', imageUrl });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send({ message: 'Internal server error' });
+        }
+    });
+};
+
