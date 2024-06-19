@@ -40,7 +40,7 @@ export const transfer = async (req, res) => {
             return res.status(400).send({ message: 'Cannot transfer more than Q2000 in a single transaction' });
         }
 
-         // Check if the daily transfer limit of Q10,000 has been exceeded
+         //Por día no puede transferir más de 10,000 (en diferentes transferencias).
         const startToday = new Date();
         startToday.setHours(0, 0, 0, 0); 
 
