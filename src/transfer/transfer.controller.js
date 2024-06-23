@@ -90,7 +90,7 @@ export const transfer = async (req, res) => {
 export const buyed = async (req, res) => {
     try {
         let uid = req.user._id
-        const { services } = req.body
+        const { service } = req.body
 
         //cuenta del usuario
         const accountRoot = await Account.findOne({ client: uid })
@@ -99,27 +99,28 @@ export const buyed = async (req, res) => {
         }
 
         // Obtener servicio
-        const service = await Services.findOne({name: services});
-        console.log(service)
+        let serviceFound = await Services.findOne({name: service});
         //ver que exista el servicio
-        if (!service) {
+        if (!serviceFound) {
             return res.status(404).send({ message: 'Service not found' });
         }
 
+    
+
         // Ver que tengan saldo suficiente
-        if (accountRoot.availableBalance < service.price) {
+        if (accountRoot.availableBalance < serviceFound.price) {
             return res.status(400).send({ message: 'Insufficient balance in root account' })
         }
 
         // Actualizar saldo
-        accountRoot.availableBalance -= parseFloat(service.price)
+        parseInt(accountRoot.availableBalance) - parseFloat(service.price)
 
         await accountRoot.save()
 
         //Crear  compra
         const newBuyed = new Transfer({
             rootAccount: accountRoot._id,
-            services: service,
+            services: serviceFound._id,
             motion: 'BUYED'
         })
 
