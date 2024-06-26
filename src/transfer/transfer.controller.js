@@ -40,7 +40,7 @@ export const transfer = async (req, res) => {
             return res.status(400).send({ message: 'Cannot transfer more than Q2000 in a single transaction' });
         }
 
-         // Check if the daily transfer limit of Q10,000 has been exceeded
+         //Por día no puede transferir más de 10,000 (en diferentes transferencias).
         const startToday = new Date();
         startToday.setHours(0, 0, 0, 0); 
 
@@ -90,7 +90,7 @@ export const transfer = async (req, res) => {
 export const buyed = async (req, res) => {
     try {
         let uid = req.user._id
-        const { services } = req.body
+        const { service } = req.body
 
         //cuenta del usuario
         const accountRoot = await Account.findOne({ client: uid })
@@ -99,27 +99,28 @@ export const buyed = async (req, res) => {
         }
 
         // Obtener servicio
-        const service = await Services.findOne({name: services});
-        console.log(service)
+        let serviceFound = await Services.findOne({name: service});
         //ver que exista el servicio
-        if (!service) {
+        if (!serviceFound) {
             return res.status(404).send({ message: 'Service not found' });
         }
 
+    
+
         // Ver que tengan saldo suficiente
-        if (accountRoot.availableBalance < service.price) {
+        if (accountRoot.availableBalance < serviceFound.price) {
             return res.status(400).send({ message: 'Insufficient balance in root account' })
         }
 
         // Actualizar saldo
-        accountRoot.availableBalance -= parseFloat(service.price)
+        parseInt(accountRoot.availableBalance) - parseFloat(service.price)
 
         await accountRoot.save()
 
         //Crear  compra
         const newBuyed = new Transfer({
             rootAccount: accountRoot._id,
-            services: service,
+            services: serviceFound._id,
             motion: 'BUYED'
         })
 
