@@ -26,4 +26,3 @@ export const upload = multer({
     limits: { fileSize: 1024 * 1024 * 20 }, // Limita el tamaño de los archivos a 20 MB
     fileFilter: fileFilter
 });
-

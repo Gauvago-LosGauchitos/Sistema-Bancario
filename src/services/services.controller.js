@@ -1,5 +1,7 @@
 import Services from "./services.model.js"
 import { checkUpdateS } from "../utils/validator.js"
+import fs from 'fs';
+import { upload } from '../utils/multerConfig.js';
 
 //testeo
 export const test = (req, res)=>{
@@ -41,27 +43,52 @@ export const defaultServices = async (req, res) => {
 }
 
 //Register
-export const register = async(req, res)=>{
+export const register = async (req, res) => {
     try {
-        let data = req.body
+        console.log('Request body:', req.body);
+        console.log('Request file:', req.file);
+
+        let data = req.body;
+
         const existingServices = await Services.findOne({ name: data.name });
         if (existingServices) {
-            return res.status(400).send({ message: 'Services already exists' });
+            return res.status(400).send({ message: 'Service already exists' });
         }
-        let services = new Services(data)
-        await services.save()
-        return res.send({message: `Registered succesfully, can be logged with name ${services.name}`})
-    } catch (err) {
-        console.error(err)
-        return res.status(500).send({message: 'Error registering Services', err: err})
+
+        // Procesa la imagen si está presente
+        if (req.file) {
+            console.log('Archivo recibido:', req.file);
+
+            // Lee el archivo de imagen y conviértelo a base64
+            const imageData = fs.readFileSync(req.file.path);
+            const base64Image = Buffer.from(imageData).toString('base64');
+            const imageUrl = `data:${req.file.mimetype};base64,${base64Image}`;
+
+            // Agrega la URL de la imagen a los datos del servicio
+            data.img = imageUrl;
+
+            // Elimina el archivo temporal actual
+            fs.unlinkSync(req.file.path);
+        } else {
+            console.log('No se recibió archivo');
+        }
+
+        let service = new Services(data);
+        await service.save();
+
+        return res.send({ message: `Registered successfully, service: ${service.name}`, service });
+    } catch (error) {
+        console.error('Error interno:', error);
+        return res.status(500).send({ message: 'Internal server error', err: error });
     }
-}
+};
+
 
 //Listar
 export const listarServices = async (req, res) => {
     try {
         // el select es para selecionar que quiero que me muestre y que no :v
-        let data = await Services.find().select('name description price -_id');
+        let data = await Services.find().select('name description price -_id img');
         return res.send({ data });
     } catch (error) {
         console.error(error);

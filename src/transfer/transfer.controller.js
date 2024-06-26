@@ -378,6 +378,7 @@ export const getAccountsByMovements = async (req, res) => {
             const transferCount = await Transfer.countDocuments({
                 $or: [
                     { rootAccount: account._id },
+                    { recipientAccount: { $in: account._id } }
                 ]
             });
 
