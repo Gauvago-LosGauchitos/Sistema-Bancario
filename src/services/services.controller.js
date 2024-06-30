@@ -100,8 +100,17 @@ export const listarServices = async (req, res) => {
 //Eliminar
 export const deleteS = async(req, res)=>{
     try {
-        let { id } = req.params;
-        let deletedServices = await Services.findOneAndDelete({_id: id});
+        let { name } = req.body; 
+        console.log(name)
+
+        const service = Services.findOne({name: name})
+        const previousImagePath = service.img;
+        if (previousImagePath  && fs.existsSync(previousImagePath)) {
+            fs.unlinkSync(previousImagePath);
+        }
+
+        let deletedServices = await Services.findOneAndDelete({name: name});
+        
         if(!deletedServices) return res.status(404).send({message: 'Services not found and not deleted'}); 
         return res.send({message: `Services with name ${deletedServices.name} deleted successfully`});
     } catch (err) {
@@ -112,31 +121,67 @@ export const deleteS = async(req, res)=>{
 
 
 //Actualizar
-export const updateS = async(req, res)=>{
+export const updateS = async (req, res) => {
     try {
-        let { id } = req.params
-        let data = req.body
-        let update = checkUpdateS(data, id)
-        if(!update) return res.status(400).send({message: 'Have submitted some data that cannot be updated'})
-        let updatedServices = await Services.findOneAndUpdate(
-            {_id: id},
+        let { name } = req.params;
+        let data = req.body;
+        console.log(data);
+        console.log(name);
+        
+        // Verificar que el servicio existe
+        let service = await Services.findOne({ name: name });
+        if (!service) return res.status(404).send({ message: 'Service not found' });
+        // Verificar si hay datos que no se pueden actualizar
+        let update = checkUpdateS(data, name);
+        if (!update) return res.status(400).send({ message: 'Some data cannot be updated' });
+
+        // Manejo de imagen si se recibe un archivo
+        if (req.file) {
+            upload.single('img')(req, res, async (err) =>{
+                if (err) {
+                    return res.status(400).send({ message: err.message });
+                }
+                console.log('Archivo recibido:', req.file);
+
+            const previousImagePath = service.img;
+
+            // Lee el archivo de imagen y conviértelo a base64
+            const imageData = fs.readFileSync(req.file.path);
+            const base64Image = Buffer.from(imageData).toString('base64');
+            const imageUrl = `data:${req.file.mimetype};base64,${base64Image}`;
+
+            // Agrega la URL de la imagen a los datos del servicio
+            data.img = imageUrl;
+
+            if (previousImagePath && fs.existsSync(previousImagePath)) {
+                fs.unlinkSync(previousImagePath);
+            }
+
+            })
+            
+        }
+
+        // Actualizar el servicio
+        let updatedService = await Services.findOneAndUpdate(
+            { name: name },
             data,
-            {new: true}
-        ).select('name description price -_id');
-        if(!updatedServices) return res.status(404).send({message: 'Services not found and not updated'})
-        return res.send({message: 'Services updated', updatedServices})    
+            { new: true }
+        ).select('name description price img -_id');
+
+        if (!updatedService) return res.status(404).send({ message: 'Service not found and not updated' });
+
+        return res.send({ message: 'Service updated', updatedService });
     } catch (err) {
-        console.error(err)
-        //if(err.keyValue && err.keyValue.name) return res.status(400).send ({message: `Services ${err.keyValue.name} is already token`})
-        return res.status(500).send({message: 'Error updating product'})
+        console.error(err);
+        return res.status(500).send({ message: 'Error updating service' });
     }
-}
+};
 
 //Buscar
 export const search = async (req, res) => {
     try {
         let { search } = req.body
-        let services = await Services.find({ name: { $regex: search, $options: 'i' } }).select('name description price -_id');
+        let services = await Services.find({ name: { $regex: search, $options: 'i' } }).select('name description price -_id img');
         if (services.length === 0) {
             return res.status(404).send({ message: 'Services not found' });
         }
@@ -144,5 +189,29 @@ export const search = async (req, res) => {
     } catch (err) {
         console.error(err);
         return res.status(500).send({ message: 'Error searching services', err: err });
+    }
+}
+
+//Buscar por medio del nombre del servicio
+export const searchByName = async (req, res) => {
+    try {
+        const {name} = req.body
+        console.log(name)
+
+        if(!name){
+            return res.status(400).send({message: 'Name is required'})
+        }
+
+        const service = await Services.findOne({name});
+        if(!service){
+            return res.status(404).send({message: 'Service not found'})
+        }
+
+        return res.send({service})
+        
+    } catch (error) {
+        console.error(err);
+        return res.status(500).send({ message: 'Error searching service', err: err });
+        
     }
 }
