@@ -14,6 +14,8 @@ export const transfer = async (req, res) => {
     try {
         const { recipientAccount, amount } = req.body
         const uid = req.user._id
+        const user  = User.findById({uid})
+        
 
         //cuenta del usuario
         const rootAccount  = await Account.findOne({ client: uid })
@@ -25,9 +27,21 @@ export const transfer = async (req, res) => {
         // buscar cuenta a la que llegara el dinero
         //const accountRoot = await Account.findOne({accountNumber: rootAccount})
         const accountRecipient = await Account.findOne({ accountNumber: recipientAccount })
+        console.log(accountRecipient)
+
+        if(accountRecipient.client === rootAccount.client){
+            console.log('igual')
+        }
         //verificar que existan las cuentas
         if (!accountRecipient) {
             return res.status(404).send({ message: 'Account not found' })
+        }
+
+
+        if(rootAccount.accountNumber === recipientAccount){
+            console.log('si')
+            return res.status(400).send({ message: 'No puedes transferirte a ti mismo' })
+
         }
 
         // Ver que tengan saldo suficiente
@@ -79,7 +93,7 @@ export const transfer = async (req, res) => {
         })
         await newTransfer.save()
 
-        return res.status(200).send({ message: 'jalo xd' })
+        return res.status(200).send({ message: 'Transferencia completada', newTransfer })
     } catch (err) {
         console.error(err)
         return res.status(500).send({ message: 'transfer error' })
@@ -167,6 +181,7 @@ export const deposit = async (req, res) => {
 export const revertTransfer = async (req, res) => {
     try {
         const { id } = req.body
+        console.log(id)
         const transfer = await Transfer.findById(id)
 
         if (!transfer) {
