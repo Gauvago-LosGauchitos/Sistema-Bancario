@@ -25,8 +25,8 @@ export const checkPassword = async (password, hash) => {
 }
 
 //Update Services
-export const checkUpdateS = (data, servicesId)=>{
-    if(servicesId){
+export const checkUpdateS = (data, name)=>{
+    if(name){
         if(Object.entries(data).length === 0){
             return false
         }

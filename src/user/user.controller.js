@@ -365,7 +365,6 @@ export const findUserByUsername = async (req, res) => {
 };
 
 // Función para manejar la carga de imágenes
-// Función para manejar la carga de imágenes
 export const uploadImage = (req, res) => {
     upload.single('image')(req, res, async (err) => {
         if (err) {
@@ -411,3 +410,57 @@ export const uploadImage = (req, res) => {
     });
 };
 
+// Función para buscar un usuario por nombre de usuario y obtener su cuenta asociada
+export const findUserAndAccountByUsername = async (req, res) => {
+    try {
+        const { username } = req.body;
+
+        if (!username) {
+            return res.status(400).send({ message: 'Username is required in the request body' });
+        }
+
+        // Buscar al usuario por nombre de usuario
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        // Encontrar la cuenta asociada al usuario
+        const account = await Account.findOne({ client: user._id });
+
+        if (!account) {
+            return res.status(404).send({ message: 'Account not found for this user' });
+        }
+
+        // Devolver los datos del usuario y la cuenta asociada
+        return res.send({ user, account });
+    } catch (err) {
+        console.error(err);
+        return res.send({ message: 'Error finding user and account' });
+    }
+};
+
+// Función para buscar usuarios por coincidencia de nombre de usuario
+export const searchUsersByUsername = async (req, res) => {
+    try {
+        const { username } = req.body;
+
+        if (!username) {
+            return res.status(400).send({ message: 'Username query parameter is required' });
+        }
+
+        const regex = new RegExp(username, 'i'); // Expresión regular para buscar por coincidencia insensible a mayúsculas
+        const users = await User.find({ username: regex });
+
+        if (users.length === 0) {
+            return res.status(404).send({ message: 'No users found' });
+        }
+
+        // Si se encuentran usuarios, devuelve la lista de usuarios
+        return res.send({message: 'Usuarios encontrados', users});
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ message: 'Error searching users' });
+    }
+};

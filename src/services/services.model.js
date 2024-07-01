@@ -12,7 +12,11 @@ const servicesSchema = mongoose.Schema({
     price: {
         type: Number,
         required: true
-    }
+    },
+    img: {
+        type: String,
+        required: true
+    },
 })
 
 export default mongoose.model('services', servicesSchema)
