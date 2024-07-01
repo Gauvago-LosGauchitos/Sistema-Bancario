@@ -105,19 +105,17 @@ export const buyed = async (req, res) => {
             return res.status(404).send({ message: 'Service not found' });
         }
 
-    
-
         // Ver que tengan saldo suficiente
         if (accountRoot.availableBalance < serviceFound.price) {
             return res.status(400).send({ message: 'Insufficient balance in root account' })
         }
 
         // Actualizar saldo
-        parseInt(accountRoot.availableBalance) - parseFloat(service.price)
+        accountRoot.availableBalance = parseFloat(accountRoot.availableBalance) - parseFloat(serviceFound.price);
 
         await accountRoot.save()
 
-        //Crear  compra
+        // Crear compra
         const newBuyed = new Transfer({
             rootAccount: accountRoot._id,
             services: serviceFound._id,
@@ -126,7 +124,11 @@ export const buyed = async (req, res) => {
 
         await newBuyed.save()
 
-        return res.status(200).send({ message: 'Purchase successful', buyed: newBuyed })
+        return res.status(200).send({ 
+            message: 'Purchase successful', 
+            buyed: newBuyed,
+            newBalance: accountRoot.availableBalance // Devolver el nuevo balance
+        })
 
     } catch (err) {
         console.error(err)
