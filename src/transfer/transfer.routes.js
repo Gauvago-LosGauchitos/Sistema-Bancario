@@ -8,7 +8,7 @@ api.get('/test', test)
 
 api.post('/transfer', [validateJwt], transfer)
 api.post('/buyed', [validateJwt], buyed)
-api.post('/deposit', deposit)
+api.post('/deposit', [validateJwt], deposit)
 api.get('/getTransferHistory', [validateJwt], getTransferHistory)
 api.post('/revertTransfer', [validateJwt], revertTransfer)
 api.post('/revertDeposit', revertDeposit)

@@ -153,31 +153,48 @@ export const buyed = async (req, res) => {
 //Deposito
 export const deposit = async (req, res) => {
     try {
-        const { recipientAccount, amount } = req.body
+        const { recipientAccount, amount } = req.body;
+        let uid = req.user._id;
 
-        // buscar la cuenta
-        const accountRecipient = await Account.findOne({ accountNumber: recipientAccount })
+        const accountRoot = await Account.findOne({ client: uid });
+        if (!accountRoot) {
+            return res.status(404).send({ message: 'Root account not found' });
+        }
+
+        // Buscar la cuenta del destinatario
+        const accountRecipient = await Account.findOne({ accountNumber: recipientAccount });
 
         // Actualizar saldo
-        accountRecipient.availableBalance += parseFloat(amount)
+        accountRecipient.availableBalance += parseFloat(amount);
 
-        await accountRecipient.save()
+        await accountRecipient.save();
 
-        // Crear deposito
+        // Crear el depósito
         const newDeposit = new Transfer({
+            rootAccount: accountRoot._id,
             recipientAccount: accountRecipient._id,
             amount: parseFloat(amount),
             motion: 'DEPOSIT'
-        })
+        });
 
-        await newDeposit.save()
-        return res.status(200).send({ message: 'Deposit successful', deposit: newDeposit })
+        await newDeposit.save();
+
+        // Realizar la población
+        const populatedDeposit = await Transfer.findById(newDeposit._id).populate({
+            path: 'rootAccount',
+            populate: {
+                path: 'client',
+                select: 'name'
+            }
+        });
+
+        return res.status(200).send({ message: 'Deposit successful', deposit: populatedDeposit });
 
     } catch (err) {
-        console.error(err)
-        return res.status(500).send({ message: 'Deposit error' })
+        console.error(err);
+        return res.status(500).send({ message: 'Deposit error' });
     }
-}
+};
 
 //Revertir transferencia
 export const revertTransfer = async (req, res) => {
@@ -402,7 +419,7 @@ export const getAccountsByMovements = async (req, res) => {
 
             const populatedAccount = await Account.populate(account, { path: 'client', select: 'username' });
             return {
-                accountOwner: account.client.username,
+                accountOwner: account.client?.username,
                 accountNumber: account.accountNumber,
                 movements: transferCount
             };
