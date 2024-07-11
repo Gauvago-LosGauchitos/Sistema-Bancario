@@ -9,6 +9,7 @@ import { upload } from '../utils/multerConfig.js';
 import fs from 'fs';
 import path from 'path';
 import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt';
 
 
 export const testU = (req, res) => {
@@ -241,33 +242,37 @@ export const updateUserAd = async (req, res) => {
 
 //update del mismo usuario a si mismo
 export const updateUserSelf = async (req, res) => {
+    const { username, address, phone, email, oldPassword, newPassword } = req.body;
+    const { id } = req.user; // Suponiendo que el middleware validateJwt adjunta el id del usuario en req.user
+
     try {
-        const token = req.headers.authorization
-        const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        const userId = decoded.id;
-        const userData = req.body;
+        const user = await User.findById(id);
 
-
-        if (!checkUpdateUserSelf(userData)) {
-            return res.status(400).json({ message: 'No se pueden actualizar los siguientes campos: nombre, DPI, número de cuenta, dirección, nombre de trabajo, ingresos mensuales' });
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
         }
 
-        // Actualizar campos permitidos
-        const updatedUser = {
-            nickname: userData.nickname,
-            phone: userData.phone,
-            email: userData.email,
-        };
+        if (username) user.username = username;
+        if (address) user.address = address;
+        if (phone) user.phone = phone;
+        if (email) user.email = email;
 
-        // Actualizar usuario
-        await User.findByIdAndUpdate(userId, updatedUser, { new: true });
+        if (oldPassword && newPassword) {
+            const isMatch = await bcrypt.compare(oldPassword, user.password);
+            if (!isMatch) {
+                return res.status(400).json({ msg: 'Old password is incorrect' });
+            }
+            user.password = await bcrypt.hash(newPassword, 10);
+        }
 
-        res.json({ message: 'Usuario actualizado correctamente' });
+        await user.save();
+        res.json({ msg: 'User updated successfully' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error al actualizar usuario' });
+        res.status(500).json({ msg: 'Server error' });
     }
 };
+
 
 
 //Delete
