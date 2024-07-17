@@ -103,52 +103,61 @@ export const transfer = async (req, res) => {
 //Compra
 export const buyed = async (req, res) => {
     try {
-        let uid = req.user._id
-        const { service } = req.body
+        let uid = req.user._id;
+        const { service, quantity } = req.body; // Obtener la cantidad desde el request
 
-        //cuenta del usuario
-        const accountRoot = await Account.findOne({ client: uid })
+        // Validar la cantidad
+        if (quantity <= 0) {
+            return res.status(400).send({ message: 'Quantity must be greater than zero' });
+        }
+
+        // Cuenta del usuario
+        const accountRoot = await Account.findOne({ client: uid });
         if (!accountRoot) {
             return res.status(404).send({ message: 'Root account not found' });
         }
 
         // Obtener servicio
-        let serviceFound = await Services.findOne({name: service});
-        //ver que exista el servicio
+        let serviceFound = await Services.findOne({ name: service });
+        // Ver que exista el servicio
         if (!serviceFound) {
             return res.status(404).send({ message: 'Service not found' });
         }
 
+        const totalAmount = parseFloat(serviceFound.price) * quantity; // Calcular el total
+
         // Ver que tengan saldo suficiente
-        if (accountRoot.availableBalance < serviceFound.price) {
-            return res.status(400).send({ message: 'Insufficient balance in root account' })
+        if (accountRoot.availableBalance < totalAmount) {
+            return res.status(400).send({ message: 'Insufficient balance in root account' });
         }
 
         // Actualizar saldo
-        accountRoot.availableBalance = parseFloat(accountRoot.availableBalance) - parseFloat(serviceFound.price);
+        accountRoot.availableBalance -= totalAmount;
 
-        await accountRoot.save()
+        await accountRoot.save();
 
         // Crear compra
         const newBuyed = new Transfer({
             rootAccount: accountRoot._id,
             services: serviceFound._id,
-            motion: 'BUYED'
-        })
+            motion: 'BUYED',
+            amount: totalAmount // Asignar el total como el amount
+        });
 
-        await newBuyed.save()
+        await newBuyed.save();
 
         return res.status(200).send({ 
             message: 'Purchase successful', 
             buyed: newBuyed,
             newBalance: accountRoot.availableBalance // Devolver el nuevo balance
-        })
+        });
 
     } catch (err) {
-        console.error(err)
-        return res.status(500).send({ message: 'Purchase error' })
+        console.error(err);
+        return res.status(500).send({ message: 'Purchase error' });
     }
 }
+
 
 //Deposito
 export const deposit = async (req, res) => {
