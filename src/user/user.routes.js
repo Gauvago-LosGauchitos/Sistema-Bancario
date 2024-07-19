@@ -10,7 +10,7 @@ api.post('/login', login)
 api.post('/registerAd',[validateJwt, isAdmin], registerAd)
 api.post('/registerC',[validateJwt, isAdmin],registerC)
 api.put('/updateUAd', [validateJwt,isAdmin], updateUserAd)
-api.put('/updateU', [validateJwt], updateUserSelf)
+api.put('/updateU', [validateJwt], updateUserSelf);
 api.delete('/deleteU', [validateJwt, isAdmin],deleteU)
 api.get('/getLogued', [validateJwt], getLoggedUser)
 api.post('/findUserByUsername',[validateJwt, isAdmin], findUserByUsername);
