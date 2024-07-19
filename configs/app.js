@@ -16,7 +16,7 @@ const port = process.env.PORT
 
 // Configuración de CORS
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: 'https://sistema-bancario-front.vercel.app' || 'http://localhost:5173',
   optionsSuccessStatus: 200
 }
 
