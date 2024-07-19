@@ -165,11 +165,6 @@ export const deposit = async (req, res) => {
         const { recipientAccount, amount } = req.body;
         let uid = req.user._id;
 
-        const accountRoot = await Account.findOne({ client: uid });
-        if (!accountRoot) {
-            return res.status(404).send({ message: 'Root account not found' });
-        }
-
         // Buscar la cuenta del destinatario
         const accountRecipient = await Account.findOne({ accountNumber: recipientAccount });
 
@@ -180,7 +175,6 @@ export const deposit = async (req, res) => {
 
         // Crear el depósito
         const newDeposit = new Transfer({
-            rootAccount: accountRoot._id,
             recipientAccount: accountRecipient._id,
             amount: parseFloat(amount),
             motion: 'DEPOSIT'
