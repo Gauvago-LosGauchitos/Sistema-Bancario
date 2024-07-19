@@ -11,7 +11,7 @@ api.post('/buyed', [validateJwt], buyed)
 api.post('/deposit', deposit)
 api.get('/getTransferHistory', [validateJwt], getTransferHistory)
 api.post('/revertTransfer', [validateJwt], revertTransfer)
-api.post('/revertDeposit', revertDeposit)
+api.post('/revertDeposit', [validateJwt], revertDeposit)
 api.post('/getLastFiveTransfers', [validateJwt, isAdmin], getLastFiveTransfers)
 api.get('/getAccountsByMovements', [validateJwt, isAdmin], getAccountsByMovements)
 

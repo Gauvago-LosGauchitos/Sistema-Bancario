@@ -38,7 +38,7 @@ export const transfer = async (req, res) => {
         }
 
 
-        if(rootAccount.accountNumber === recipientAccount){
+        if(rootAccount.accountNumber === accountRecipient.accountNumber){
             console.log('si')
             return res.status(400).send({ message: 'No puedes transferirte a ti mismo' })
 
